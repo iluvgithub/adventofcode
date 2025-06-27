@@ -1,20 +1,22 @@
 package com.myway.adventofcode.tools.file
+
 import java.io.{BufferedWriter, File, FileWriter}
 import scala.io.Source
+
 object FileUtil {
 
-  def readFile(relative: String): List[String]  =readFile(
+  def readFile(relative: String): List[String] = readFile(
     new File(getClass.getClassLoader.getResource(relative).getPath)
   )
 
-  def readFile(file: File): List[String]  = {
+  def readFile(file: File): List[String] = {
     val bufferedSource = Source.fromFile(file)
     val lines = bufferedSource.getLines().toList
     bufferedSource.close()
     lines
   }
 
-  def writeFile(path: File, lines: List[String]): Unit =  {
+  def writeFile(path: File, lines: List[String]): Unit = {
     val bw = new BufferedWriter(new FileWriter(path))
     for (line <- lines) {
       bw.write(line)
@@ -23,4 +25,13 @@ object FileUtil {
     bw.close()
   }
 
+
+  def main(args: Array[String]): Unit = {
+    println("val in = List(")
+    val data = FileUtil.readFile("adventofcode/tmp/clipboard.txt")
+    data
+      .zipWithIndex
+      .foreach(s => println(s"\"${s._1}\"${if(s._2<data.size-1)  "," else ")"}"))
+
+  }
 }

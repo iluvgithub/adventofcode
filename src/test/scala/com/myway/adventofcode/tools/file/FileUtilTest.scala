@@ -19,7 +19,7 @@ class FileUtilTest extends AnyFunSuite with Matchers {
 
   test("read file from relative path") {
     // arrange
-    val relative =  "adventofcode/tools/file/sample.txt"
+    val relative = "adventofcode/tools/file/sample.txt"
     // act
     val actual = FileUtil.readFile(relative)
     // assert
