@@ -7,7 +7,7 @@ class DayDAYTest extends AnyFunSuite with Matchers {
 
   val in = List( )
 
-  test("case 1") {
+  test("year:YEAR day:DAY case 1") {
     // arrange
     // act
     val out = DayDAY.solve1(in)
@@ -16,10 +16,10 @@ class DayDAYTest extends AnyFunSuite with Matchers {
   }
 
 
-  test("case 2") {
+  test("year:YEAR day:DAY case 2") {
     // arrange
     // act
-    val out = Day1.solve2(in)
+    val out = DayDAY.solve2(in)
     // assert
     out shouldBe ""
   }
