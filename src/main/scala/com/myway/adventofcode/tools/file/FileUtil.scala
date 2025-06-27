@@ -6,11 +6,14 @@ import scala.io.Source
 
 object FileUtil {
 
-  def readFile(relativePath: String): List[String] = {
+  def readFile(relativePath: String): List[String] =
+    readFile(toFile(relativePath))
+
+  private def toFile(relativePath: String) = {
     val rootUrl = getClass.getClassLoader.getResource(".")
     val rootPath = Paths.get(rootUrl.toURI)
     val filePath: Path = rootPath.resolve(relativePath)
-    readFile(filePath.toFile)
+    filePath.toFile
   }
 
   def readFile(file: File): List[String] = {
@@ -19,6 +22,9 @@ object FileUtil {
     bufferedSource.close()
     lines
   }
+
+  def writeFile(relativePath: String, lines: List[String]): Unit =
+    writeFile(toFile(relativePath), lines)
 
   def writeFile(path: File, lines: List[String]): Unit = {
     val bw = new BufferedWriter(new FileWriter(path))
