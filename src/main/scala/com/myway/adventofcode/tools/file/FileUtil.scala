@@ -1,13 +1,17 @@
 package com.myway.adventofcode.tools.file
 
 import java.io.{BufferedWriter, File, FileWriter}
+import java.nio.file.{Path, Paths}
 import scala.io.Source
 
 object FileUtil {
 
-  def readFile(relative: String): List[String] = readFile(
-    new File(getClass.getClassLoader.getResource(relative).getPath)
-  )
+  def readFile(relativePath: String): List[String] = {
+    val rootUrl = getClass.getClassLoader.getResource(".")
+    val rootPath = Paths.get(rootUrl.toURI)
+    val filePath: Path = rootPath.resolve(relativePath)
+    readFile(filePath.toFile)
+  }
 
   def readFile(file: File): List[String] = {
     val bufferedSource = Source.fromFile(file)
@@ -31,7 +35,7 @@ object FileUtil {
     val data = FileUtil.readFile("adventofcode/tmp/clipboard.txt")
     data
       .zipWithIndex
-      .foreach(s => println(s"\"${s._1}\"${if(s._2<data.size-1)  "," else ")"}"))
+      .foreach(s => println(s"\"${s._1}\"${if (s._2 < data.size - 1) "," else ")"}"))
 
   }
 }
