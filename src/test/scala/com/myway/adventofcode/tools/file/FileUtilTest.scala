@@ -17,6 +17,15 @@ class FileUtilTest extends AnyFunSuite with Matchers {
     actual shouldBe List("a,bc,d", "12,34")
   }
 
+  test("read file from relative path") {
+    // arrange
+    val relative =  "adventofcode/tools/file/sample.txt"
+    // act
+    val actual = FileUtil.readFile(relative)
+    // assert
+    actual shouldBe List("a,bc,d", "12,34")
+  }
+
   test("write then read file") {
     // arrange
     val rootUrl = getClass.getClassLoader.getResource(".")

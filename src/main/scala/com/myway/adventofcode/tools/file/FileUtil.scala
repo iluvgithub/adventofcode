@@ -3,6 +3,10 @@ import java.io.{BufferedWriter, File, FileWriter}
 import scala.io.Source
 object FileUtil {
 
+  def readFile(relative: String): List[String]  =readFile(
+    new File(getClass.getClassLoader.getResource(relative).getPath)
+  )
+
   def readFile(file: File): List[String]  = {
     val bufferedSource = Source.fromFile(file)
     val lines = bufferedSource.getLines().toList
