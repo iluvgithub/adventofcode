@@ -1,4 +1,4 @@
-package com.myway.adventofcode.adv2024
+package com.myway.adventofcode.adv20YEAR
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
