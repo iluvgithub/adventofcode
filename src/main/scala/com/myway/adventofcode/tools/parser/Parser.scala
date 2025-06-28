@@ -93,18 +93,21 @@ object ParserErrorMonad {
   def number: ParserError[Long] = many(digit)
     .map[Long](_.foldLeft[Long](0L)((acc, d) => acc * 10L + d))
 
-  private def intoNumber(l:List[Int]): Long = l.foldLeft(0L)((acc, d) => acc * 10L + d)
+  private def intoNumber(l: List[Int]): Long = l.foldLeft(0L)((acc, d) => acc * 10L + d)
+
   def string0(s: String): ParserError[Unit] = string(s).map(_ => ())
 
   def many[A](p: ParserError[A]): ParserError[List[A]] = new ParserError[List[A]]() {
 
     override def run(input: String): Error[(List[A], String)] = {
       @tailrec
-      def loop(inp: String, acc: List[A]): Error[(List[A], String)] =
-        p.run(inp) match {
+      def loop(inp: String, acc: List[A]): Error[(List[A], String)] = {
+        if (inp.isEmpty) Right((acc.reverse, ""))
+        else p.run(inp) match {
           case Right((a, rest)) => loop(rest, a :: acc)
           case Left(_) => Right((acc.reverse, inp))
         }
+      }
 
       loop(input, Nil)
     }

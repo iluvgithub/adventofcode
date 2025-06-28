@@ -64,6 +64,9 @@ class ParserTest extends AnyFunSuite with Matchers {
     digit.run("456") shouldBe Right((4, "56"))
     number.parse("123") shouldBe Right(123L)
     number.parse("123456789123456") shouldBe Right(123456789123456L)
+
+    digit.parse("") shouldBe Left("Empty String")
+    number.parse("") shouldBe Right(0)
   }
 
   test("many ") {
@@ -73,6 +76,11 @@ class ParserTest extends AnyFunSuite with Matchers {
     m.parse("") shouldBe Right(Nil)
 
     m.run("ababc") shouldBe Right(("ab" :: "ab" :: Nil, "c"))
+  }
+
+  test("many number") {
+    val ns = many(number)
+    ns.parse("12 34 56") shouldBe Right(List(12, 34, 56))
   }
 
 }
