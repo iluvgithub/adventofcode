@@ -85,9 +85,6 @@
         </executions>
         <configuration>
           <reportsDirectory>${project.build.directory}/test-reports</reportsDirectory>
-          <includes>
-            <include>**/*Test.scala</include>
-          </includes>
         </configuration>
       </plugin>
     </plugins>
