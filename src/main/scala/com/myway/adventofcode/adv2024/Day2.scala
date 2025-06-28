@@ -16,7 +16,7 @@ object Day2 {
 
   def parse(s: String): List[Long] = many(token(number)).parse(s).fold(_ => Nil, identity)
 
-  def isSafe(is: List[Long]): Boolean = {
+  private def isSafe(is: List[Long]): Boolean = {
     val q: List[Long] = is.zip(is.tail).map({ case (u, v) =>  u - v  })
     val b1 = q.map(Math.abs).count(x => x > 0 && x <= 3).equals(q.size)
     val b2 = q.forall(_ >= 0) || q.forall(_ <= 0)
@@ -25,7 +25,7 @@ object Day2 {
 
   def solve2(data: List[String]): Int = data.map(parse).count(isSafe2)
 
-  def isSafe2(is: List[Long]): Boolean = {
+  private def isSafe2(is: List[Long]): Boolean = {
     val iss: List[List[Long]] = List.range(0,is.size).map(
       i => is.zipWithIndex.filterNot(_._2.equals(i)).map(_._1)
     )
