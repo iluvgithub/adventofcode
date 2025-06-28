@@ -59,14 +59,21 @@ class ParserTest extends AnyFunSuite with Matchers {
     token(string("abc")).run("   abcdef") shouldBe Right(("abc", "def"))
   }
 
-  test("number") {
+  test("digit") {
     digit.parse("123") shouldBe Right(1)
     digit.run("456") shouldBe Right((4, "56"))
+    digit.parse("") shouldBe Left("Empty String")
+    digit.parse(" ") shouldBe Left("[ ] failed test")
+
+  }
+  test("number") {
     number.parse("123") shouldBe Right(123L)
     number.parse("123456789123456") shouldBe Right(123456789123456L)
 
-    digit.parse("") shouldBe Left("Empty String")
+    number.parse(" ") shouldBe Right(0)
+    number.run(" ") shouldBe Right((0, " "))
     number.parse("") shouldBe Right(0)
+    number.parse(" ") shouldBe Right(0)
   }
 
   test("many ") {
@@ -78,8 +85,12 @@ class ParserTest extends AnyFunSuite with Matchers {
     m.run("ababc") shouldBe Right(("ab" :: "ab" :: Nil, "c"))
   }
 
+  test("many unit should fail to avoid infinite loop ") {
+    many(unit(0)).parse("abc") shouldBe Left("Infinite loop")
+  }
+
   test("many number") {
-    val ns = many(number)
+    val ns = many(token(number))
     ns.parse("12 34 56") shouldBe Right(List(12, 34, 56))
   }
 

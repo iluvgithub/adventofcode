@@ -104,7 +104,9 @@ object ParserErrorMonad {
       def loop(inp: String, acc: List[A]): Error[(List[A], String)] = {
         if (inp.isEmpty) Right((acc.reverse, ""))
         else p.run(inp) match {
-          case Right((a, rest)) => loop(rest, a :: acc)
+          case Right((a, rest)) =>
+            if (rest.length.equals(inp.length)) Left("Infinite loop")
+            else loop(rest, a :: acc)
           case Left(_) => Right((acc.reverse, inp))
         }
       }
