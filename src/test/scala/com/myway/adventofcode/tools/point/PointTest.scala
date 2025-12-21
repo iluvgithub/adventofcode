@@ -20,4 +20,17 @@ class PointTest extends AnyFunSuite with Matchers {
     w shouldBe Point(0, 1)
   }
 
+  test(" from List") {
+    // arrange
+
+    val in = List(
+      "7,1",
+      "11,1",
+      "11,7",
+      "9,7")
+    // act
+    val out = Point.fromList(in)
+    // assert
+    out shouldBe List(Point(7, 1), Point(11, 1), Point(11, 7), Point(9, 7))
+  }
 }
