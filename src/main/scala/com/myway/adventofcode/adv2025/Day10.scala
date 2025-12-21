@@ -2,6 +2,7 @@ package com.myway.adventofcode.adv2025
 
 import com.myway.adventofcode.tools.astar.{Astar, AstarGraph}
 import com.myway.adventofcode.tools.file.FileUtil
+import com.myway.adventofcode.tools.linear.UndeterminedSolver
 import com.myway.adventofcode.tools.parser.ParserErrorMonad._
 
 object Day10 {
@@ -9,7 +10,7 @@ object Day10 {
   def main(args: Array[String]): Unit = {
     val data: List[String] = FileUtil.readFile("adventofcode/2025/day10.txt")
     println(solve1(data))
-    println(solve2(data))
+    println(solve2(data)) // 16855 too low
   }
 
   def solve1(data: List[String]): Long = {
@@ -34,16 +35,20 @@ object Day10 {
       val out = Astar.find(g, cost, light.map(_ => false), light)
       out.size - 1
     }
-
     def solve2: Long = {
-      println(s"j=${joltage.mkString(".")}")
-      val g = new AstarGraph[List[Int]] {
-        override def next(is: List[Int]): List[List[Int]] = buttons.map(_.pressJolt(is))
-      }
-      val cost: List[Int] => List[Int] => Long = x => y => 1L
-      val out = Astar.find(g, cost, joltage.map(_ => 0), joltage)
+      val sz = buttons.flatMap(_.ids).max + 1
+      val A0: Array[Array[Double]] = buttons.toArray.map(_.toArray(sz))
+      val n = A0.map(_.length).max
+      val m = A0.length
+      val A = List.range(0, n).map(j =>
+        List.range(0, m).map(i => A0(i)(j)).toArray
+      ).toArray
 
-      out.size - 1
+      val b1: Array[Double] = joltage.map(_.toDouble).toArray
+
+      val solution1: Array[Double] = UndeterminedSolver.solve(A, b1)
+      solution1.map(Math.round).sum
+
     }
 
   }
@@ -69,6 +74,10 @@ object Day10 {
     def pressJolt(is: List[Int]): List[Int] = is.zipWithIndex.map(
       x => if (ids.toSet.contains(x._2)) 1 + x._1 else x._1
     )
+
+    def toArray(sz: Int): Array[Double] = List.range(0, sz).map(
+      i => if (ids.contains(i)) 1.0 else 0.0
+    ).toArray
   }
 
   val subParser: ParserError[Button] = for {
@@ -77,19 +86,5 @@ object Day10 {
     _ <- char(')')
   } yield Button(ids.map(_.toInt))
 
-  def breadthFirstSearch[S](generator: S => (S, List[S]), p: S => Boolean): S => Option[S] =
-    s => breadthFirstGenerator(generator)(s).find(p)
-
-  def breadthFirstGenerator[S](generator: S => (S, List[S])): S => LazyList[S] =
-    s => bfs0[S](generator, s)
-
-  private def bfs0[S](g: S => (S, List[S]), s: S): LazyList[S] =
-    LazyList.unfold[S, (List[S], Set[S])]((s :: Nil, Set()))(f = pair => pair._1 match {
-      case Nil => None
-      case y :: ys =>
-        val (a, newS) = g(y)
-        val set: Set[S] = pair._2 + a
-        Some(a, (ys ++ newS.filterNot(set.contains), set))
-    })
 
 }
