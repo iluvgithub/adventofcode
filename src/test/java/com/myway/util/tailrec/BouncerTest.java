@@ -11,16 +11,16 @@ public class BouncerTest {
         // given
         int n = 18000;
         // when
-        Integer actual = sum(n);
+        Long actual = sum(n);
         // then
         assertThat(actual).isEqualTo(n * (n + 1) / 2);
     }
 
-    private Integer sum(Integer n) {
-        return sum(n, 0).eval();
+    private Long sum(Integer n) {
+        return sum(n, 0L).eval();
     }
 
-    private Bouncer<Integer> sum(Integer n, Integer out) {
+    private Bouncer<Long> sum(Integer n, Long out) {
         if (n == 0) {
             return Bouncer.done(out);
 
