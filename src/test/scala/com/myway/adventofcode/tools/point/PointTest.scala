@@ -22,7 +22,6 @@ class PointTest extends AnyFunSuite with Matchers {
 
   test(" from List") {
     // arrange
-
     val in = List(
       "7,1",
       "11,1",
@@ -54,4 +53,22 @@ class PointTest extends AnyFunSuite with Matchers {
     map.getOrElse(Point(7, 1), '?') shouldBe '#'
   }
 
+
+  test(" display") {
+    // arrange
+    def p(x: Int, y: Int): Point = Point(x, y)
+
+    val map = Map(
+      p(0, 0) -> '.', p(1, 0) -> '.', p(2, 0) -> '.',
+      p(0, 1) -> '.', p(1, 1) -> '#', p(2, 1) -> '.',
+      p(0, 2) -> 'O', p(1, 2) -> 'c', p(2, 2) -> '.')
+    // act
+    val out = Point.display(map)
+    // assert
+    out shouldBe List(
+      "...",
+      ".#.",
+      "Oc."
+    )
+  }
 }

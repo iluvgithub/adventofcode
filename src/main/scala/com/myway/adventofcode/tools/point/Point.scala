@@ -20,4 +20,21 @@ object Point {
     (row, y) <- grid.zipWithIndex
     (char, x) <- row.zipWithIndex
   } yield Point(x, y) -> char).toMap
+
+
+  def display(map0: Map[Point, Char]): List[String] = if (map0.isEmpty) Nil else {
+
+    val xs = map0.keys.map(_.x)
+    val ys = map0.keys.map(_.y)
+
+    val minX = xs.min
+    val maxX = xs.max
+    val minY = ys.min
+    val maxY = ys.max
+    List.range(minY, maxY + 1).map(
+      y => List.range(minX, maxX + 1).map(x => map0.getOrElse(Point(x, y), '?')).mkString
+    )
+  }
+
+
 }
