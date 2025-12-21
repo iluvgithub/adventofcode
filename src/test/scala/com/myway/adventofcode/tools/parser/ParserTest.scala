@@ -24,7 +24,7 @@ class ParserTest extends AnyFunSuite with Matchers {
 
   test("sat") {
     sat(_.isDigit).parse("123") shouldBe Right('1')
-    sat(_.isDigit).secureParse("123") shouldBe '1'
+    sat(_.isDigit).parseSure("123") shouldBe '1'
     sat(_.isDigit).run("123a") shouldBe Right(('1', "23a"))
     sat(_.isDigit).run("a") shouldBe Left("[a] failed test")
   }

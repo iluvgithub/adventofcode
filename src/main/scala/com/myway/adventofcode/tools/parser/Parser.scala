@@ -56,7 +56,7 @@ object ParserErrorMonad {
       case Right(a) => Some(a)
     }
 
-    def secureParse(s: String): A = parseOpt(s).get
+    def parseSure(s: String): A = parseOpt(s).get
   }
 
   def fail[A](msg: String): ParserError[A] = (_: String) => Left(msg)
