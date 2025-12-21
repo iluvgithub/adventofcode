@@ -8,12 +8,12 @@ trait AstarGraph[A] {
 
 object Astar {
 
-  def find[A  ](
-                                g: AstarGraph[A],
-                                cost: A => A => Long,
-                                from: A,
-                                to: A
-                              ): List[A] = {
+  def find[A](
+               g: AstarGraph[A],
+               cost: A => A => Long,
+               from: A,
+               to: A
+             ): List[A] = {
 
     val gScore = mutable.Map[A, Long]().withDefaultValue(Long.MaxValue)
     val fScore = mutable.Map[A, Long]().withDefaultValue(Long.MaxValue)
