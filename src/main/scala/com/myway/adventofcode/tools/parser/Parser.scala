@@ -49,8 +49,14 @@ object ParserErrorMonad {
   }
 
   implicit class ParserErrorWrapper[A](p: ParserError[A]) {
-    def parse(s: String): Error[A] =
-      p.runParser(s)
+    def parse(s: String): Error[A] = p.runParser(s)
+
+    def parseOpt(s: String): Option[A] = parse(s) match {
+      case Left(_) => None
+      case Right(a) => Some(a)
+    }
+
+    def secureParse(s: String): A = parseOpt(s).get
   }
 
   def fail[A](msg: String): ParserError[A] = (_: String) => Left(msg)
