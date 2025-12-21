@@ -10,7 +10,7 @@ public interface Bouncer<T> extends Supplier<Bouncer<T>> {
                 filter(Bouncer::isDone).//
                 map(Bouncer::eval).//
                 findFirst().//
-                get();
+                orElse(null);
     }
 
     default Boolean isDone() {
