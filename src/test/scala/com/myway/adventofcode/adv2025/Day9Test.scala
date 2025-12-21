@@ -29,7 +29,7 @@ class Day9Test extends AnyFunSuite with Matchers {
     // act
     val out = Day9.solve2(in)
     // assert
-    out shouldBe 0L
+    out shouldBe 24L
   }
 
 }

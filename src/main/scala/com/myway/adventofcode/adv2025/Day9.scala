@@ -1,15 +1,16 @@
 package com.myway.adventofcode.adv2025
 
 import com.myway.adventofcode.tools.file.FileUtil
-import com.myway.adventofcode.tools.point.Point
+import com.myway.adventofcode.tools.point.{Bipoint, Point, Rectangle}
 
 object Day9 {
 
   def main(args: Array[String]): Unit = {
-    val data: List[String] = FileUtil.readFile( "adventofcode/2025/day9.txt")
+    val data: List[String] = FileUtil.readFile("adventofcode/2025/day9.txt")
     println(solve1(data))
     println(solve2(data))
   }
+
   def solve1(data: List[String]): Long = {
     val pts: List[Point] = Point.fromList(data)
 
@@ -38,7 +39,19 @@ object Day9 {
 
   def solve2(data: List[String]): Long = {
     val pts: List[Point] = Point.fromList(data)
-    0L
+
+    val pairs: List[(Point, Point)] = for {
+      i <- List.range(0, pts.size)
+      j <- List.range(0, pts.size)
+    } yield (pts(i), pts(j))
+    val all: List[Bipoint] = pairs.map({ case (u, v) => Bipoint.from(u, v) }).filter(_.isDefined).map(_.get)
+    val set: Set[Point] = all.map(_.mid).toSet
+
+    solve(pts, p2 =>  {
+      val r: Rectangle  = Rectangle.from(p2._1,p2._2)
+
+      set.foldLeft(true)( (b,pt) => !r.isInterior(pt) && b)
+    })
   }
 
 }
