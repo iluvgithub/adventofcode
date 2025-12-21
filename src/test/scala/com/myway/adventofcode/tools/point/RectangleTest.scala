@@ -12,7 +12,7 @@ class RectangleTest extends AnyFunSuite with Matchers {
   }
 
   test(" interior") {
-    val r = Rectangle.from(Point(1, 2), Point(3, 4))
+    val r = Rectangle.from(Point(1, 2), Point(4, 5))
     r.isInterior(Point(3, 3)) shouldBe true
     r.isInterior(Point(1, 2)) shouldBe false
   }
