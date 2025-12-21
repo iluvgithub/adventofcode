@@ -15,4 +15,9 @@ object Point {
     val pair = s.split(",")
     Point(pair(0).toInt, pair(1).toInt)
   }
+
+  def parse(grid: List[String]): Map[Point, Char] = (for {
+    (row, y) <- grid.zipWithIndex
+    (char, x) <- row.zipWithIndex
+  } yield Point(x, y) -> char).toMap
 }

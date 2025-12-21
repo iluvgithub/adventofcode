@@ -33,4 +33,25 @@ class PointTest extends AnyFunSuite with Matchers {
     // assert
     out shouldBe List(Point(7, 1), Point(11, 1), Point(11, 7), Point(9, 7))
   }
+
+  test(" parse") {
+    // arrange
+    val grid: List[String] = List(
+      "..............",
+      ".......#...#..",
+      "..............",
+      "..#....#......",
+      "..............",
+      "..#......#....",
+      "..............",
+      ".........#.#..",
+      ".............."
+    )
+
+    // act
+    val map = Point.parse(grid)
+    // assert
+    map.getOrElse(Point(7, 1), '?') shouldBe '#'
+  }
+
 }
