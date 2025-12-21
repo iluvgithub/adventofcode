@@ -96,6 +96,14 @@ object ParserErrorMonad {
 
   def digit: ParserError[Int] = sat(_.isDigit).map(x => s"$x".toInt)
 
+  def digits: ParserError[Long] = {
+    val out = for {
+      d <- digit
+      ds <- many(digit)
+    } yield d :: ds
+    out.map[Long](_.foldLeft[Long](0L)((acc, d) => acc * 10L + d))
+  }
+
   def number: ParserError[Long] = many(digit)
     .map[Long](_.foldLeft[Long](0L)((acc, d) => acc * 10L + d))
 
@@ -128,8 +136,10 @@ object ParserErrorMonad {
       MON.unit
     )
 
-  def token[A](p: ParserError[A]): ParserError[A] = for {
-    _ <- many(char(' '))
+  def tokenOf[A](c: Char, p: ParserError[A]): ParserError[A] = for {
+    _ <- many(char(c))
     out <- p
   } yield out
+
+  def token[A](p: ParserError[A]): ParserError[A] = tokenOf(' ', p)
 }

@@ -1,7 +1,7 @@
 package com.myway.adventofcode.tools.parser
 
 import com.myway.adventofcode.tools.parser.ParserErrorMonad.ERROR_PARSER_MON.unit
-import com.myway.adventofcode.tools.parser.ParserErrorMonad.{char, char0, digit, getchar, many, number, orElse, sat, string, string0, token}
+import com.myway.adventofcode.tools.parser.ParserErrorMonad.{char, char0, digit, digits, getchar, many, number, orElse, sat, string, string0, token}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
@@ -65,8 +65,12 @@ class ParserTest extends AnyFunSuite with Matchers {
     digit.run("456") shouldBe Right((4, "56"))
     digit.parse("") shouldBe Left("Empty String")
     digit.parse(" ") shouldBe Left("[ ] failed test")
-
   }
+
+  test("digits") {
+    digits.parse("123") shouldBe Right(123L)
+  }
+
   test("number") {
     number.parse("123") shouldBe Right(123L)
     number.parse("123456789123456") shouldBe Right(123456789123456L)
