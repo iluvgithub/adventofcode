@@ -8,6 +8,8 @@ class BipointTest extends AnyFunSuite with Matchers {
   test(" vertical") {
     Bipoint.from(Point(10, 1), Point(10, 4)) shouldBe Some(VertBipoint(10, 1, 4))
     Bipoint.from(Point(10, 4), Point(10, 1)) shouldBe Some(VertBipoint(10, 1, 4))
+    Bipoint.from(Point(10, 4), Point(10, 1)).get.mid shouldBe Point(10, 2)
+    Bipoint.from(Point(10, 5), Point(10, 1)).get.mid shouldBe Point(10, 3)
   }
 
   test(" horizontal") {
