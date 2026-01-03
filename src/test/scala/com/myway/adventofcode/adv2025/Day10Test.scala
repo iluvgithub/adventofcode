@@ -19,8 +19,10 @@ class Day10Test extends AnyFunSuite with Matchers {
   }
 
 
+
   test("year:25 day:10 case 2") {
     // arrange
+    // https://chatgpt.com/c/6949d26f-d40c-8325-ad61-8b4e011bfd75
     // act
     val out = Day10.solve2(in)
     // assert
