@@ -5,8 +5,12 @@ import org.scalatest.matchers.should.Matchers
 
 class ListUtilTest extends AnyFunSuite with Matchers {
 
+  test(" cpl cpt") {
+    ListUtil.cpl('A', List(1, 2, 3)) shouldBe List(('A', 1), ('A', 2), ('A', 3))
+    ListUtil.cpr(List(1, 2, 3), 'A') shouldBe List((1, 'A'), (2, 'A'), (3, 'A'))
+  }
   test(" cpp") {
-    ListUtil.cpp(List('a', 'b', 'c'),  List('0', '1')) shouldBe
+    ListUtil.cpp(List('a', 'b', 'c'), List('0', '1')) shouldBe
       List(
         ('a', '0'), ('a', '1'),
         ('b', '0'), ('b', '1'),
