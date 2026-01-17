@@ -10,7 +10,8 @@ class FileUtilTest extends AnyFunSuite with Matchers {
 
   test("read file") {
     // arrange
-    val file = new File(getClass.getClassLoader.getResource("adventofcode/tools/file/sample.txt").getPath)
+    val file =
+      new File(getClass.getClassLoader.getResource("adventofcode/tools/file/sample.txt").getPath)
     // act
     val actual = FileUtil.readFile(file)
     // assert
@@ -28,11 +29,11 @@ class FileUtilTest extends AnyFunSuite with Matchers {
 
   test("write then read file") {
     // arrange
-    val rootUrl = getClass.getClassLoader.getResource(".")
-    val rootPath = Paths.get(rootUrl.toURI)
-    val relativePath = "adventofcode/tools/file/write.txt"
+    val rootUrl        = getClass.getClassLoader.getResource(".")
+    val rootPath       = Paths.get(rootUrl.toURI)
+    val relativePath   = "adventofcode/tools/file/write.txt"
     val filePath: Path = rootPath.resolve(relativePath)
-    val file = filePath.toFile
+    val file           = filePath.toFile
     // act
     FileUtil.writeFile(file, List("ABC", "123"))
     val actual = FileUtil.readFile(file)

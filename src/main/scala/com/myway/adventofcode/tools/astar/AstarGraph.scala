@@ -9,14 +9,14 @@ trait AstarGraph[A] {
 object Astar {
 
   def find[A](
-               g: AstarGraph[A],
-               cost: A => A => Long,
-               from: A,
-               to: A
-             ): List[A] = {
+    g: AstarGraph[A],
+    cost: A => A => Long,
+    from: A,
+    to: A
+  ): List[A] = {
 
-    val gScore = mutable.Map[A, Long]().withDefaultValue(Long.MaxValue)
-    val fScore = mutable.Map[A, Long]().withDefaultValue(Long.MaxValue)
+    val gScore   = mutable.Map[A, Long]().withDefaultValue(Long.MaxValue)
+    val fScore   = mutable.Map[A, Long]().withDefaultValue(Long.MaxValue)
     val cameFrom = mutable.Map[A, A]()
 
     gScore(from) = 0L
@@ -31,19 +31,18 @@ object Astar {
       val (_, current) = openSet.dequeue()
 
       if (current == to) { // uses standard == (works fine for case classes, etc.)
-        def reconstruct(node: A): List[A] = {
+        def reconstruct(node: A): List[A] =
           cameFrom.get(node) match {
-            case None => List(node)
+            case None       => List(node)
             case Some(prev) => reconstruct(prev) :+ node
           }
-        }
 
         return reconstruct(to)
       }
 
       closed += current
 
-      for (neighbor <- g.next(current)) {
+      for (neighbor <- g.next(current))
         if (!closed.contains(neighbor)) {
           val tentativeG = gScore(current) + cost(current)(neighbor)
 
@@ -55,7 +54,6 @@ object Astar {
             openSet += ((fScore(neighbor), neighbor)) // duplicate entries ok
           }
         }
-      }
     }
 
     Nil // no path found

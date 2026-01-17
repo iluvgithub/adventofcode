@@ -13,9 +13,9 @@ object Day1 {
 
   def solve1(data: List[String]): String = {
     val ints = data.map(toInts)
-    val l = ints.map(_._1).sorted
-    val r = ints.map(_._2).sorted
-    val z = l.zip(r).map({ case (u, v) => Math.abs(v - u) }).sum
+    val l    = ints.map(_._1).sorted
+    val r    = ints.map(_._2).sorted
+    val z    = l.zip(r).map { case (u, v) => Math.abs(v - u) }.sum
     z.toString
   }
 
@@ -25,11 +25,11 @@ object Day1 {
   }
 
   def solve2(data: List[String]): String = {
-    val ints = data.map(toInts)
-    val l: List[Int] = ints.map(_._1).sorted
-    val r: List[Int] = ints.map(_._2).sorted
+    val ints          = data.map(toInts)
+    val l: List[Int]  = ints.map(_._1).sorted
+    val r: List[Int]  = ints.map(_._2).sorted
     val bag: Bag[Int] = r.foldLeft(new Bag[Int]())(_ add _)
-    val out = l.map(i => i * bag.get(i)).sum
+    val out           = l.map(i => i * bag.get(i)).sum
     out.toString
   }
 

@@ -12,21 +12,23 @@ trait Parser[M[_], A] {
 
   def run(s: String): M[(A, String)]
 
-  def map[B](f: A => B)(implicit MON: Monad[M]): Parser[M, B] = (s: String) => MON.map[(A, String), (B, String)](
-    self.run(s), { case (x, s) => (f(x), s) }
-  )
+  def map[B](f: A => B)(implicit MON: Monad[M]): Parser[M, B] = (s: String) =>
+    MON.map[(A, String), (B, String)](
+      self.run(s),
+      { case (x, s) => (f(x), s) }
+    )
 
   def flatMap[B](g: A => Parser[M, B])(implicit MON: Monad[M]): Parser[M, B] =
-    (s: String) => MON.flatMap[(A, String), (B, String)](
-      self.run(s),
-      { case (a, rest) => g(a).run(rest) }
-    )
+    (s: String) =>
+      MON.flatMap[(A, String), (B, String)](
+        self.run(s),
+        { case (a, rest) => g(a).run(rest) }
+      )
 }
-
 
 object ParserErrorMonad {
 
-  type Error[X] = Either[String, X]
+  type Error[X]       = Either[String, X]
   type ParserError[X] = Parser[Error, X]
 
   def getchar: ParserError[Char] = new ParserError[Char]() {
@@ -52,7 +54,7 @@ object ParserErrorMonad {
     def parse(s: String): Error[A] = p.runParser(s)
 
     def parseOpt(s: String): Option[A] = parse(s) match {
-      case Left(_) => None
+      case Left(_)  => None
       case Right(a) => Some(a)
     }
 
@@ -78,7 +80,8 @@ object ParserErrorMonad {
   }
 
   def sat(p: Char => Boolean): ParserError[Char] =
-    ERROR_PARSER_MON.flatMap[Char, Char](getchar,
+    ERROR_PARSER_MON.flatMap[Char, Char](
+      getchar,
       x => if (p(x)) ERROR_PARSER_MON.unit(x) else fail(s"[$x] failed test")
     )
 
@@ -87,8 +90,8 @@ object ParserErrorMonad {
   def char0(c: Char): ParserError[Unit] = char(c).map(_ => ())
 
   def string(s: String): ParserError[String] =
-    s.foldLeft(ERROR_PARSER_MON.unit(""))(
-      (p, c) => for {
+    s.foldLeft(ERROR_PARSER_MON.unit(""))((p, c) =>
+      for {
         s <- p
         x <- char(c)
       } yield s"$s$x"
@@ -98,7 +101,7 @@ object ParserErrorMonad {
 
   def digits: ParserError[Long] = {
     val out = for {
-      d <- digit
+      d  <- digit
       ds <- many(digit)
     } yield d :: ds
     out.map[Long](_.foldLeft[Long](0L)((acc, d) => acc * 10L + d))
@@ -115,15 +118,15 @@ object ParserErrorMonad {
 
     override def run(input: String): Error[(List[A], String)] = {
       @tailrec
-      def loop(inp: String, acc: List[A]): Error[(List[A], String)] = {
+      def loop(inp: String, acc: List[A]): Error[(List[A], String)] =
         if (inp.isEmpty) Right((acc.reverse, ""))
-        else p.run(inp) match {
-          case Right((a, rest)) =>
-            if (rest.length.equals(inp.length)) Left("Infinite loop")
-            else loop(rest, a :: acc)
-          case Left(_) => Right((acc.reverse, inp))
-        }
-      }
+        else
+          p.run(inp) match {
+            case Right((a, rest)) =>
+              if (rest.length.equals(inp.length)) Left("Infinite loop")
+              else loop(rest, a :: acc)
+            case Left(_) => Right((acc.reverse, inp))
+          }
 
       loop(input, Nil)
     }
@@ -131,13 +134,15 @@ object ParserErrorMonad {
   }
 
   def orElse[A](p: ParserError[A], other: ParserError[A]): ParserError[A] =
-    (s: String) => p.run(s).fold(
-      _ => other.run(s),
-      MON.unit
-    )
+    (s: String) =>
+      p.run(s)
+        .fold(
+          _ => other.run(s),
+          MON.unit
+        )
 
   def tokenOf[A](c: Char, p: ParserError[A]): ParserError[A] = for {
-    _ <- many(char(c))
+    _   <- many(char(c))
     out <- p
   } yield out
 

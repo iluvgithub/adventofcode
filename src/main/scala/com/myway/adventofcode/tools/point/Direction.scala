@@ -2,8 +2,8 @@ package com.myway.adventofcode.tools.point
 
 trait Direction {
   def move(p: Point): Point
-  def turnLeft:Direction
-  def opposite:Direction
+  def turnLeft: Direction
+  def opposite: Direction
 }
 
 object North extends Direction {
@@ -40,6 +40,6 @@ object West extends Direction {
 
 object Direction {
 
-  val allFour: List[Direction] = List(North, East, South, West)
+  val allFour: List[Direction]  = List(North, East, South, West)
   val diagonal: List[Direction] = allFour.map(_.turnLeft)
 }

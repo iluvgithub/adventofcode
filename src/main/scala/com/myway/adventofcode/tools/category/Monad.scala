@@ -23,7 +23,7 @@ object Monad {
     @tailrec
     override def tailRecM[A, B](init: A)(fn: A => Id[Either[A, B]]): Id[B] =
       fn(init) match {
-        case Left(a) => tailRecM(a)(fn)
+        case Left(a)  => tailRecM(a)(fn)
         case Right(b) => b
       }
 

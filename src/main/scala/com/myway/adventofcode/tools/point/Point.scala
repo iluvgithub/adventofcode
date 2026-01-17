@@ -6,7 +6,6 @@ case class Point(x: Int, y: Int) {
 
 }
 
-
 object Point {
 
   def fromList(l: List[String]): List[Point] = l.map(from)
@@ -17,12 +16,12 @@ object Point {
   }
 
   def parse(grid: List[String]): Map[Point, Char] = (for {
-    (row, y) <- grid.zipWithIndex
+    (row, y)  <- grid.zipWithIndex
     (char, x) <- row.zipWithIndex
   } yield Point(x, y) -> char).toMap
 
-
-  def display(map0: Map[Point, Char]): List[String] = if (map0.isEmpty) Nil else {
+  def display(map0: Map[Point, Char]): List[String] = if (map0.isEmpty) Nil
+  else {
 
     val xs = map0.keys.map(_.x)
     val ys = map0.keys.map(_.y)
@@ -31,10 +30,9 @@ object Point {
     val maxX = xs.max
     val minY = ys.min
     val maxY = ys.max
-    List.range(minY, maxY + 1).map(
-      y => List.range(minX, maxX + 1).map(x => map0.getOrElse(Point(x, y), '?')).mkString
-    )
+    List
+      .range(minY, maxY + 1)
+      .map(y => List.range(minX, maxX + 1).map(x => map0.getOrElse(Point(x, y), '?')).mkString)
   }
-
 
 }

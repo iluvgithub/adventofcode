@@ -1,8 +1,6 @@
 package com.myway.adventofcode.tools.point
 
-case class Rectangle(minX: Int, maxX: Int,
-                     minY: Int, maxY: Int) {
-
+case class Rectangle(minX: Int, maxX: Int, minY: Int, maxY: Int) {
 
   def isInside(p: Point): Boolean =
     minX <= p.x && p.x <= maxX &&
@@ -15,7 +13,9 @@ case class Rectangle(minX: Int, maxX: Int,
 
 object Rectangle {
   def from(p: Point, q: Point): Rectangle = Rectangle(
-    Math.min(p.x, q.x), Math.max(p.x, q.x),
-    Math.min(p.y, q.y), Math.max(p.y, q.y)
+    Math.min(p.x, q.x),
+    Math.max(p.x, q.x),
+    Math.min(p.y, q.y),
+    Math.max(p.y, q.y)
   )
 }

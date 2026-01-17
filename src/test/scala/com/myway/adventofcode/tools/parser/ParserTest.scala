@@ -1,7 +1,20 @@
 package com.myway.adventofcode.tools.parser
 
 import com.myway.adventofcode.tools.parser.ParserErrorMonad.ERROR_PARSER_MON.unit
-import com.myway.adventofcode.tools.parser.ParserErrorMonad.{char, char0, digit, digits, getchar, many, number, orElse, sat, string, string0, token}
+import com.myway.adventofcode.tools.parser.ParserErrorMonad.{
+  char,
+  char0,
+  digit,
+  digits,
+  getchar,
+  many,
+  number,
+  orElse,
+  sat,
+  string,
+  string0,
+  token
+}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
@@ -29,7 +42,6 @@ class ParserTest extends AnyFunSuite with Matchers {
     sat(_.isDigit).run("a") shouldBe Left("[a] failed test")
   }
 
-
   test("char") {
     char('a').parse("abc") shouldBe Right('a')
     char('a').run("abc") shouldBe Right(('a', "bc"))
@@ -51,7 +63,6 @@ class ParserTest extends AnyFunSuite with Matchers {
     string0("abc").parse("abcdef") shouldBe Right(())
     string0("abc").run("abcdef") shouldBe Right(((), "def"))
   }
-
 
   test("string token") {
     token(string("abc")).parse("     abcdef") shouldBe Right("abc")

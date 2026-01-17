@@ -8,6 +8,4 @@ trait Functor[F[A]] {
 
 }
 
-object FunctorObj {
-
-}
+object FunctorObj {}

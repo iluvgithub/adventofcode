@@ -5,7 +5,7 @@ import org.scalatest.matchers.should.Matchers
 
 class Day12Test extends AnyFunSuite with Matchers {
 
-  val in = List( )
+  val in = List()
 
   test("year:24 day:12 case 1") {
     // arrange
@@ -14,7 +14,6 @@ class Day12Test extends AnyFunSuite with Matchers {
     // assert
     out shouldBe ""
   }
-
 
   test("year:24 day:12 case 2") {
     // arrange

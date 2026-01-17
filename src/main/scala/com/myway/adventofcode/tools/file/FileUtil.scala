@@ -10,15 +10,15 @@ object FileUtil {
     readFile(toFile(relativePath))
 
   private def toFile(relativePath: String) = {
-    val rootUrl = getClass.getClassLoader.getResource(".")
-    val rootPath = Paths.get(rootUrl.toURI)
+    val rootUrl        = getClass.getClassLoader.getResource(".")
+    val rootPath       = Paths.get(rootUrl.toURI)
     val filePath: Path = rootPath.resolve(relativePath)
     filePath.toFile
   }
 
   def readFile(file: File): List[String] = {
     val bufferedSource = Source.fromFile(file)
-    val lines = bufferedSource.getLines().toList
+    val lines          = bufferedSource.getLines().toList
     bufferedSource.close()
     lines
   }
@@ -35,12 +35,10 @@ object FileUtil {
     bw.close()
   }
 
-
   def main(args: Array[String]): Unit = {
     println("val in = List(")
     val data = FileUtil.readFile("adventofcode/tmp/clipboard.txt")
-    data
-      .zipWithIndex
+    data.zipWithIndex
       .foreach(s => println(s"\"${s._1}\"${if (s._2 < data.size - 1) "," else ")"}"))
 
   }

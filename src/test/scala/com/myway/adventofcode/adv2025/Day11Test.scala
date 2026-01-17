@@ -15,7 +15,8 @@ class Day11Test extends AnyFunSuite with Matchers {
     "fff: out",
     "ggg: out",
     "hhh: ccc fff iii",
-    "iii: out")
+    "iii: out"
+  )
 
   test("year:25 day:11 case 1") {
     // arrange
@@ -25,7 +26,6 @@ class Day11Test extends AnyFunSuite with Matchers {
     // assert
     out shouldBe 5L
   }
-
 
   val in2 = List(
     "svr: aaa bbb",
@@ -40,7 +40,8 @@ class Day11Test extends AnyFunSuite with Matchers {
     "dac: fff",
     "fff: ggg hhh",
     "ggg: out",
-    "hhh: out")
+    "hhh: out"
+  )
   test("year:25 day:11 case 2") {
     // arrange
     // act

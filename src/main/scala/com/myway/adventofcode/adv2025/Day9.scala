@@ -24,7 +24,7 @@ object Day9 {
       if i < j
     } yield (pts(i), pts(j))
 
-    pairs.filter(pred).map({ case (u, v) => surf(u, v) }).max
+    pairs.filter(pred).map { case (u, v) => surf(u, v) }.max
   }
 
   private def surf(p: Point, q: Point): Long = {
@@ -36,7 +36,6 @@ object Day9 {
     (maxX - minX + 1L) * (maxY - minY + 1L)
   }
 
-
   def solve2(data: List[String]): Long = {
     val pts: List[Point] = Point.fromList(data)
 
@@ -44,14 +43,18 @@ object Day9 {
       i <- List.range(0, pts.size)
       j <- List.range(0, pts.size)
     } yield (pts(i), pts(j))
-    val all: List[Bipoint] = pairs.map({ case (u, v) => Bipoint.from(u, v) }).filter(_.isDefined).map(_.get)
+    val all: List[Bipoint] =
+      pairs.map { case (u, v) => Bipoint.from(u, v) }.filter(_.isDefined).map(_.get)
     val set: Set[Point] = all.map(_.mid).toSet
 
-    solve(pts, p2 =>  {
-      val r: Rectangle  = Rectangle.from(p2._1,p2._2)
+    solve(
+      pts,
+      p2 => {
+        val r: Rectangle = Rectangle.from(p2._1, p2._2)
 
-      set.foldLeft(true)( (b,pt) => !r.isInterior(pt) && b)
-    })
+        set.foldLeft(true)((b, pt) => !r.isInterior(pt) && b)
+      }
+    )
   }
 
 }

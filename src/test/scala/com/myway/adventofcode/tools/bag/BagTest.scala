@@ -28,7 +28,6 @@ class BagTest extends AnyFunSuite with Matchers {
     out1.get('X') shouldBe 0
   }
 
-
   test(" construct from map") {
     // arrange
     val m: Map[Char, Boolean] = Map('a' -> true, 'b' -> false, 'c' -> true)
@@ -52,8 +51,8 @@ class BagTest extends AnyFunSuite with Matchers {
   }
   test(" bag flatmap") {
     // arrange
-    val bag0: Bag[Char] = new Bag().addMany('a', 42L).addMany('b', 32)
-    val bag1: Bag[Char] = new Bag().addMany('a', 7L).addMany('c', 31)
+    val bag0: Bag[Char]     = new Bag().addMany('a', 42L).addMany('b', 32)
+    val bag1: Bag[Char]     = new Bag().addMany('a', 7L).addMany('c', 31)
     val bag: Bag[Bag[Char]] = new Bag().addMany(bag0, 2L).add(bag1)
     // act
     val out = bag.flatMap(identity)
@@ -77,8 +76,13 @@ class BagTest extends AnyFunSuite with Matchers {
 
   test(" bag ix ") {
     // arrange
-    val bag: Bag[(Char, Boolean)] = new Bag().addMany(('a', true), 2).addMany(('b', false), 4).
-      add(('c', true)).add(('b', true)).add(('a', false)).add(('a', true))
+    val bag: Bag[(Char, Boolean)] = new Bag()
+      .addMany(('a', true), 2)
+      .addMany(('b', false), 4)
+      .add(('c', true))
+      .add(('b', true))
+      .add(('a', false))
+      .add(('a', true))
     // act
     val out: Map[Char, Bag[Boolean]] = BagOps.ix(bag)
     // assert
@@ -90,4 +94,3 @@ class BagTest extends AnyFunSuite with Matchers {
   }
 
 }
-

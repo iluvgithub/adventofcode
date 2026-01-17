@@ -11,10 +11,7 @@ class ListUtilTest extends AnyFunSuite with Matchers {
   }
   test(" cpp") {
     ListUtil.cpp(List('a', 'b', 'c'), List('0', '1')) shouldBe
-      List(
-        ('a', '0'), ('a', '1'),
-        ('b', '0'), ('b', '1'),
-        ('c', '0'), ('c', '1'))
+      List(('a', '0'), ('a', '1'), ('b', '0'), ('b', '1'), ('c', '0'), ('c', '1'))
   }
   test(" cpList") {
     // arrange
