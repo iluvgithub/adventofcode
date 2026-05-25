@@ -34,8 +34,6 @@ object GhostLeg {
   }
 
   def solve(input: List[String]): List[String] = {
-    var puz: Puzzle = parse(input)
-
-    puz.solve
+    parse(input).solve
   }
 }
