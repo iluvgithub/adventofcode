@@ -28,4 +28,34 @@ class ListUtilTest extends AnyFunSuite with Matchers {
       List('c', '-', '1')
     )
   }
+
+  test("split") {
+    // arrange
+    val l = List(1, 2, 3)
+    // act
+    val out = ListUtil.splits(l)
+    // assert
+    out shouldBe List(
+      (List(), List(1, 2, 3)),
+      (List(1), List(2, 3)),
+      (List(1, 2), List(3)),
+      (List(1, 2, 3), List())
+    )
+  }
+
+  test("permutation") {
+    // arrange
+    val l = List(1, 2, 3)
+    // act
+    val out = ListUtil.permutations(l)
+    // assert
+    out shouldBe List(
+      List(3, 2, 1),
+      List(2, 3, 1),
+      List(2, 1, 3),
+      List(3, 1, 2),
+      List(1, 3, 2),
+      List(1, 2, 3)
+    )
+  }
 }

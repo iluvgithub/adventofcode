@@ -16,4 +16,14 @@ object ListUtil {
       cpp(xs, acc).map { case (u, vs) => u :: vs }
     )
 
+  def permutations[A](l: List[A]): List[List[A]] = l.foldLeft[List[List[A]]](List(Nil)) {
+    (acc, a) =>
+      for {
+        (as, a0) <- cpr(acc, a)
+        (l, r)   <- splits(as)
+      } yield l ++ (a0 :: r)
+  }
+
+  def splits[A](as: List[A]): List[(List[A], List[A])] =
+    List.range(0, as.size + 1).map(i => (as.take(i), as.drop(i)))
 }
