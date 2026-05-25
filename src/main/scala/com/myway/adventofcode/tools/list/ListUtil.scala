@@ -19,7 +19,7 @@ object ListUtil {
   def permutations[A](l: List[A]): List[List[A]] = l.foldLeft[List[List[A]]](List(Nil)) {
     (acc, a) =>
       for {
-        (as, a0) <- cpr(acc, a)
+        (a0, as) <- cpl(a, acc)
         (l, r)   <- splits(as)
       } yield l ++ (a0 :: r)
   }
