@@ -26,4 +26,18 @@ object ListUtil {
 
   def splits[A](as: List[A]): List[(List[A], List[A])] =
     List.range(0, as.size + 1).map(i => (as.take(i), as.drop(i)))
+
+  def maxSegSum(l: List[Int]): List[Int] = {
+    val o: List[(Int, List[Int])] =  l.scanLeft[(Int,List[Int])]((0,Nil))(
+      (acc, i) => {
+        val sum: Int = acc._1 + i
+        if(sum < 0) (0,Nil) else {
+          (sum, i :: acc._2)
+        }
+
+      }
+    )
+    o.maxBy(_._1)._2.reverse
+  }
+
 }

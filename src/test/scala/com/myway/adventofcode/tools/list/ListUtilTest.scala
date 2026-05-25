@@ -58,4 +58,25 @@ class ListUtilTest extends AnyFunSuite with Matchers {
       List(1, 2, 3)
     )
   }
+
+  test("maximum segment sum") {
+    // arrange
+    val diff  = List(-1, 2, -2, -1, 4)
+    val diff1 = List(-1, 2, -2, -1, 4, -1, 3)
+    val l = List(-2, 1, -3, 4, -1, 2, 1, -5, 4)
+
+    // act
+    val out  = ListUtil.maxSegSum(diff)
+    val out1 = ListUtil.maxSegSum(diff1)
+    val o    = ListUtil.maxSegSum(l)
+    // assert
+    out shouldBe List(4)
+    out.sum shouldBe 4
+    out1 shouldBe List(4, -1, 3)
+    out1.sum shouldBe 6
+
+    o shouldBe List(4, -1, 2, 1)
+    o.sum shouldBe 6
+  }
+
 }
