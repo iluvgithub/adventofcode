@@ -10,8 +10,7 @@ object CodingGameStub extends App {
 
   val readline = ???
   def foo(): Unit = {
-
-
+    Console.err.println("Debug messages...")
   }
 
   val size = readLine.toInt
