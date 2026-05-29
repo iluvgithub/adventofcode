@@ -25,4 +25,7 @@ class RoseTreeTest extends AnyFunSuite with Matchers {
     rose.browseDepth shouldBe List('a', 'b', 'c', 'd', 'f', 'g', 'e')
   }
 
+  test("trace") {
+    rose.trace shouldBe "a(b,c(d(f,g),e))"
+  }
 }
