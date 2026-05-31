@@ -63,7 +63,7 @@ object RoseZipperHelp {
   def findRec[A](a: A, rs: List[RoseZipper[A]]): Option[RoseZipper[A]] = rs match {
     case Nil => None
     case x :: xs =>
-      if (x.focus.head.equals(a)) Some(x)
+      if (x.focus.head == a) Some(x)
       else {
         val n = x.focus.kindred.size
         val newRz: List[RoseZipper[A]] = List.range(0, n).map(x.down(_)).collect(_.get)
