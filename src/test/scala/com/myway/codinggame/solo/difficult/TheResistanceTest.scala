@@ -19,17 +19,13 @@ class TheResistanceTest extends AnyFunSuite with Matchers {
     TheResistance.solve(l) shouldBe 2
   }
 
+
   val in = List("-.-", "6", "A", "B", "C", "HELLO", "K", "WORLD")
 
   test(" solve b") {
     TheResistance.solve(in) shouldBe 1
   }
 
-  test("solve 3 0") {
-    TheResistance.split("-.-..---.-..---.-..--")("-.-..--") shouldBe Some(
-      ("","-.-..---.-..--", 0, "-.-..--")
-    )
-  }
 
   test("solve 3") {
     TheResistance.solve(
@@ -45,28 +41,10 @@ class TheResistanceTest extends AnyFunSuite with Matchers {
     ) shouldBe 125
   }
 
-  test("solve 4 0") {
-    TheResistance.split("...")(".") shouldBe Some(("", "..", 0, "."))
-    TheResistance.split("...")("..") shouldBe Some(("", ".", 0, ".."))
+  test("solve 0") {
+    TheResistance.solve(List("", "2", "E", "I")) shouldBe 1L
   }
 
-  test("solve 4 0 splt") {
-    TheResistance.split("..")("..") shouldBe Some(("", "", 0, ".."))
-  }
-  test("solve 4 a") {
-    val input = List("..", "2", "E", "I")
-    TheResistance.solve(input) shouldBe 2
-    TheResistance.split("..")(".") shouldBe Some(("", ".", 0, "."))
-  }
-  test("solve 4") {
-    val input = List("...", "2", "E", "I")
-    TheResistance.solve(input) shouldBe 3
-  }
-
-  test("solve 5 0") {
-    TheResistance.split("....")("..") shouldBe Some(("", "..", 0, ".."))
-    TheResistance.split("....")(".") shouldBe Some(("", "...", 0, "."))
-  }
   test("solve 5") {
     TheResistance.solve(List("....", "2", "E", "I")) shouldBe 5
   }
@@ -75,5 +53,11 @@ class TheResistanceTest extends AnyFunSuite with Matchers {
     TheResistance.solve(List(".....", "2", "E", "I")) shouldBe 8
   }
 
+  test("solve 15") {
+    TheResistance.solve(List("...............", "2", "E", "I")) shouldBe 987
+  }
 
+  test("solve 16") {
+    TheResistance.solve(List("................", "2", "E", "I")) shouldBe 1597
+  }
 }

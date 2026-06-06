@@ -71,76 +71,62 @@ object TheResistance {
   }
 
   private def wordToMorse(s: String): String = s.toList.map(c => morseMap(c)).mkString
+
   def solve(l: List[String]): Long = {
     val message: String        = l.head
     val setWords: List[String] = l.tail.tail
     val setWordsMorse: Map[String, Int] =
       setWords.groupBy(wordToMorse).toList.map { case (k, v) => (k, v.size) }.toMap
-
-    go(message, setWordsMorse)
+    solve(message, setWordsMorse)
   }
 
-  def split(targetMessage: String): String => Option[(String, String, Int, String)] = candidate =>
-    List
-      .range(0, targetMessage.length)
-      .map { j =>
-        val idx = targetMessage.drop(j).indexOf(candidate)
-        if (idx >= 0) Some(idx + j) else None
-      }
-      .filter(_.isDefined)
-      .map(_.get)
-      .map(i => (targetMessage.take(i), targetMessage.drop(i + candidate.length), i, candidate))
-      .headOption
-
-  private def hasPrefix(setWordsMorse: Map[String, Int]): String => Boolean =
-    s => setWordsMorse.keySet.exists(w => w.length < s.length && s.startsWith(w))
-
-  private def completeForAutoOverlap(
-    left: String,
-    right: String,
-    idx: Int,
-    candidate: String
-  ): List[(String, String, Int, String)] =
-    (left, right, idx, candidate) :: Nil
-
-  private def go(targetMessage: String, setWordsMorse: Map[String, Int]): Long =
-    if (targetMessage.isEmpty) 1L
-    else if (setWordsMorse.contains(targetMessage) && !hasPrefix(setWordsMorse)(targetMessage))
-      setWordsMorse(targetMessage)
+  private def solve(message: String, setWordsMorse0: Map[String, Int]): Long = if (message.isEmpty)
+    1L
+  else {
+    val setWordsMorse = setWordsMorse0.toList.filter { case (k, _) => message.contains(k) }.toMap
+    if (setWordsMorse.isEmpty) 0L
     else {
-      val splitInTheMiddle: List[(String, String, Int, String)] =
+      val max = setWordsMorse.keySet.map(_.length).max
+      if (message.length > 2 * max) {
+        val mid0 = message.length / 2
         setWordsMorse.keySet.toList
-          .map(split(targetMessage))
-          .filter(_.isDefined)
-          .map(_.get)
-          .sortBy(j => Math.abs(j._3 - (targetMessage.length / 2)))
-
-      splitInTheMiddle match {
-        case Nil => 0L
-        case x :: xs =>
-          val l: List[(String, String, Int, String)] = xs
-            .foldLeft(List(x), x._3, x._3 + x._4.length) { (acc, u) =>
-              val fromAcc = acc._2
-              val toAcc   = acc._3
-              val from    = u._3
-              val to      = from + u._4.length
-              val mini    = Math.min(to, toAcc)
-              val maxi    = Math.max(from, fromAcc)
-              if (maxi < mini)
-                (u :: acc._1, maxi, mini)
-              else
-                acc
-            }
-            ._1
-
-          val o = l
-            .flatMap(t => completeForAutoOverlap(t._1, t._2, t._3, t._4))
-            .map { case (left, right, i, w) =>
-              go(left, setWordsMorse) * setWordsMorse(w) * go(right, setWordsMorse)
-            }
-          o.sum
-      }
-
+          .flatMap { w =>
+            List.range(0, w.length).map(j => (j, w))
+          }
+          .foldLeft(0L) { (o, pair) =>
+            val key       = pair._2
+            val j         = pair._1
+            val left      = message.take(mid0 - j)
+            val midString = message.drop(mid0 - j).take(key.length)
+            val right     = message.drop(mid0 - j + key.length)
+            o + solve(left, setWordsMorse) * setWordsMorse.getOrElse(midString, 0) * solveShort(
+              right,
+              setWordsMorse
+            )
+          }
+      } else
+        solveShort(message, setWordsMorse)
     }
+  }
+
+  private def solveShort(message: String, setWordsMorse: Map[String, Int]): Long = {
+
+    val initBag = setWordsMorse.keySet.foldLeft(new Bag[String]().addMany("", 1L))((bg, k) =>
+      bg.addMany(k, 0 + setWordsMorse(k))
+    )
+    val outBag = List.range(1, message.length + 1).foldLeft(initBag) { (bag, i) =>
+      val w: String                     = message.take(i)
+      val pairs: List[(String, String)] = split(w)
+      pairs.foldLeft(bag) { (bg, pair) =>
+        val o: Long = bag.get(pair._2) * setWordsMorse.getOrElse(pair._1, 0)
+        if (o > 0L) bg addMany (w, o) else bg
+      }
+    }
+
+    outBag.get(message)
+  }
+
+  def split(s: String): List[(String, String)] =
+    List.range(1, s.length).map(i => (s.take(i), s.drop(i)))
 
 }
