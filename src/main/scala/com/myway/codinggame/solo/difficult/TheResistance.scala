@@ -80,33 +80,30 @@ object TheResistance {
     solve(message, setWordsMorse)
   }
 
-  private def solve(message: String, setWordsMorse0: Map[String, Int]): Long = if (message.isEmpty)
+  private def solve(message: String, setWordsMorse: Map[String, Int]): Long = if (message.isEmpty)
     1L
   else {
-    val setWordsMorse = setWordsMorse0.toList.filter { case (k, _) => message.contains(k) }.toMap
-    if (setWordsMorse.isEmpty) 0L
-    else {
-      val max = setWordsMorse.keySet.map(_.length).max
-      if (message.length > 2 * max) {
-        val mid0 = message.length / 2
-        setWordsMorse.keySet.toList
-          .flatMap { w =>
-            List.range(0, w.length).map(j => (j, w))
-          }
-          .foldLeft(0L) { (o, pair) =>
-            val key       = pair._2
-            val j         = pair._1
-            val left      = message.take(mid0 - j)
-            val midString = message.drop(mid0 - j).take(key.length)
-            val right     = message.drop(mid0 - j + key.length)
-            o + solve(left, setWordsMorse) * setWordsMorse.getOrElse(midString, 0) * solveShort(
-              right,
-              setWordsMorse
-            )
-          }
-      } else
-        solveShort(message, setWordsMorse)
-    }
+    val max = setWordsMorse.keySet.map(_.length).max
+    if (message.length > 2 * max) {
+      val mid0 = message.length / 2
+      setWordsMorse.keySet.toList
+        .flatMap { w =>
+          List.range(0, w.length).map(j => (j, w))
+        }
+        .foldLeft(0L) { (o, pair) =>
+          val key       = pair._2
+          val j         = pair._1
+          val left      = message.take(mid0 - j)
+          val midString = message.drop(mid0 - j).take(key.length)
+          val right     = message.drop(mid0 - j + key.length)
+          o + solve(left, setWordsMorse) * setWordsMorse.getOrElse(midString, 0) * solveShort(
+            right,
+            setWordsMorse
+          )
+        }
+    } else
+      solveShort(message, setWordsMorse)
+
   }
 
   private def solveShort(message: String, setWordsMorse: Map[String, Int]): Long = {
