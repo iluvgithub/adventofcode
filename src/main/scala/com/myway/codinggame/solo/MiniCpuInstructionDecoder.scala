@@ -8,10 +8,13 @@ object MiniCpuInstructionDecoder {
       setLong(k, java.lang.Long.parseLong(v, 16))
 
     def setLong(k: String, v: Long): Register = this.copy(
-      this.map - k + (k -> v)
+      this.map - k + (k -> overflow(v))
     )
     def getLong(k: String): Long = this.map(k)
 
+    def overflow(v: Long): Long =
+      if (v >= 0) v                  % 256
+      else (v + (1 + v / 256) * 256) % 256
   }
 
   def compute(l: List[String]): Register =
