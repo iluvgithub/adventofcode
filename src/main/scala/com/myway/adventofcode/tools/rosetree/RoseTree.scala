@@ -15,40 +15,31 @@ case class RoseTree[A](head: A, kindred: List[RoseTree[A]]) {
     case x :: xs => RoseTree(x.head, concat(x.kindred)(xs)).browse(concat, head :: out)
   }
 
-  def trace: String = fold[String](a =>
-    zs =>
-      if (zs.isEmpty) a.toString else s"${a.toString}(${if (zs.isEmpty) "" else zs.mkString(",")})"
-  )
+  def trace: String = fold[String](a => xs => if (xs.isEmpty) s"$a" else s"$a(${xs.mkString(",")})")
+
   def fold[B](f: A => List[B] => B): B = {
+    trait ToVisit
 
-    sealed trait Frame
-    case class Enter(tree: RoseTree[A])                                     extends Frame
-    case class Exit(a: A, cont: List[B] => B, remaining: Int, acc: List[B]) extends Frame
+    case class BranchStub(lbl: A, n: Int) extends ToVisit
+    case class TreeWrap(t: RoseTree[A])   extends ToVisit
 
-    @tailrec
-    def loop(stack: List[Frame], resultStack: List[B]): B = stack match {
-      case Nil =>
-        resultStack.head
+    @annotation.tailrec
+    def loop(stack: List[ToVisit], results: List[B]): B = stack match {
+      case Nil => results.head
 
-      case Enter(RoseTree(a, subs)) :: tail =>
-        val exit     = Exit(a, f(a), subs.length, Nil)
-        val newStack = subs.map(Enter).reverse ++ (exit :: tail)
-        loop(newStack, resultStack)
+      case TreeWrap(t) :: rest =>
+        val newStack =
+          t.kindred.map(TreeWrap(_)) ++ (BranchStub(t.head, t.kindred.length) :: rest)
+        loop(newStack, results)
 
-      case Exit(a, cont, 0, acc) :: tail =>
-        val b = cont(acc.reverse)
-        loop(tail, b :: resultStack)
-
-      case Exit(a, cont, n, acc) :: tail =>
-        resultStack match {
-          case h :: t =>
-            loop(Exit(a, cont, n - 1, h :: acc) :: tail, t)
-          case Nil =>
-            throw new IllegalStateException("Result stack underflow")
-        }
+      case BranchStub(lbl, n) :: rest =>
+        val children  = results.take(n)
+        val remaining = results.drop(n)
+        val value     = f(lbl)(children.reverse)
+        loop(rest, value :: remaining)
     }
 
-    loop(List(Enter(this)), Nil)
+    loop(List(TreeWrap(this)), Nil)
   }
 }
 
