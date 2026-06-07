@@ -22,6 +22,13 @@ class ForestTest extends AnyFunSuite with Matchers {
     forest.browseDepth shouldBe List('a', 'b', 'e', 'f', 'd')
   }
 
+  test("insert string into forest of chars") {
+    val actual = List("car", "cat", "z").foldLeft(Forest.empty[Char])(
+      Forest.insertInto
+    )
+    actual.trace shouldBe "z,c(a(t,r))"
+  }
+
 }
 
 class ForestZipperTest extends AnyFunSuite with Matchers {

@@ -50,6 +50,21 @@ object Forest {
   def branch[A](forest: List[(A, Forest[A])]) = Forest(forest)
 
   def initZipper[A]: ForestZipper[A] = ForestZipper(empty, Nil)
+
+
+  def insertInto(f:Forest[Char], s:String):Forest[Char] =
+    insert(new ForestZipper[Char](f,Nil), s.toList)
+
+  @tailrec
+  def insert(f0: ForestZipper[Char], chrs: List[Char]): Forest[Char] = chrs match {
+    case Nil => f0.upRoot.focus
+    case x :: xs =>
+      val zz = f0.downBy(x) match {
+        case None    => f0.prepend(x).downBy(x).get
+        case Some(z) => z
+      }
+      insert(zz, xs)
+  }
 }
 
 case class ForestContext[A](
