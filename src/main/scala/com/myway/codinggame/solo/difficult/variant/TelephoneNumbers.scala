@@ -131,6 +131,5 @@ object TelephoneNumbers {
         case Some(z) => z
       }
       insert(zz, xs)
-
   }
 }
