@@ -5,29 +5,30 @@ import org.scalatest.matchers.should.Matchers
 
 class TrieTest extends AnyFunSuite with Matchers {
 
+  import com.myway.adventofcode.tools.monoid.MonoidSyntax.longPlusMonoid
   test(" one char test") {
-    val trie0 = new Trie()
-    val o: Trie = trie0.insert("c")
+    val trie0: Trie[Long] = Trie.empty[Long]
+    val o: Trie[Long] = trie0.insert("c",1L)
 
-    o.search("c") shouldBe true
-    o.search("b") shouldBe false
+    o.search("c") shouldBe Some(1L)
+    o.search("b") shouldBe None
   }
 
   test(" two chars test") {
-    val trie0 = new Trie()
-    val o: Trie = trie0.insert("ca")
+    val trie0 = Trie.empty[Long]
+    val o: Trie [Long]= trie0.insert("ca", 1L)
 
-    o.search("ca") shouldBe true
-    o.search("cb") shouldBe false
+    o.search("ca") shouldBe Some(1L)
+    o.search("cb") shouldBe None
   }
 
   test(" first test") {
-    val trie0 = new Trie()
-    val o: Trie = trie0.insert("cat").insert("car")
+    val trie0 = Trie.empty[Long]
+    val o: Trie[Long] = trie0.insert("cat",1L).insert("car", 2L)
  
-    o.search("cat") shouldBe true
-    o.search("car") shouldBe true
-    o.search("cab") shouldBe false
+    o.search("cat") shouldBe Some(1L)
+    o.search("car") shouldBe Some(2L)
+    o.search("cab") shouldBe None
   }
 
 }
