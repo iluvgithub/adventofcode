@@ -35,6 +35,11 @@ class ForestZipperTest extends AnyFunSuite with Matchers {
     val f = zip.upRoot.focus
 
     f.trace shouldBe "b,c(e,f),d"
+
+    val zipc =zip.upRoot.downBy('c').get
+    zipc.getFocusValue.get shouldBe 'c'
+
+    zipc.setValue('x').upRoot.focus.trace shouldBe "b,x(e,f),d"
   }
 
 }

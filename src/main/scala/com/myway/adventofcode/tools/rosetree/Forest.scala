@@ -69,7 +69,7 @@ case class ForestZipper[A](focus: Forest[A], context: List[ForestContext[A]]) {
   }
 
   def search[K](get: A => K, k: K): Option[Int] =
-    List.range(0, focus.roses.length).find(i => get(focus.roses(i)._1).equals(k))
+    List.range(0, focus.roses.length).find(i => get(focus.roses(i)._1) == k)
 
   def search(a: A): Option[Int] = search(identity, a)
 
@@ -96,4 +96,14 @@ case class ForestZipper[A](focus: Forest[A], context: List[ForestContext[A]]) {
     this.copy(
       focus = Forest((a, Forest.empty[A]) :: focus.roses)
     )
+
+  def setValue(a:A): ForestZipper[A] = this.context match {
+    case Nil => this
+    case x::xs => this.copy(context = x.copy(parent = a):: xs)
+  }
+
+  def getFocusValue:Option[A] = this.context match {
+    case Nil => None
+    case x::_ => Some(x.parent)
+  }
 }
