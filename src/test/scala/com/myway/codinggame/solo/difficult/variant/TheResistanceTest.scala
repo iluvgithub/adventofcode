@@ -5,7 +5,6 @@ import org.scalatest.matchers.should.Matchers
 
 class TheResistanceTest extends AnyFunSuite with Matchers {
 
-
   test(" more EAI") {
     TheResistance.wordToMorse("EAI") shouldBe "..-.."
   }
@@ -23,13 +22,11 @@ class TheResistanceTest extends AnyFunSuite with Matchers {
     TheResistance.solve(l) shouldBe 2
   }
 
-
   val in = List("-.-", "6", "A", "B", "C", "HELLO", "K", "WORLD")
 
   test(" solve b") {
     TheResistance.solve(in) shouldBe 1
   }
-
 
   test("solve 3") {
     TheResistance.solve(
@@ -49,6 +46,9 @@ class TheResistanceTest extends AnyFunSuite with Matchers {
     TheResistance.solve(List("", "2", "E", "I")) shouldBe 1L
   }
 
+  test("solve 1") {
+    TheResistance.solve(List(".", "1", "E")) shouldBe 1L
+  }
   test("solve 5") {
     TheResistance.solve(List("....", "2", "E", "I")) shouldBe 5
   }
