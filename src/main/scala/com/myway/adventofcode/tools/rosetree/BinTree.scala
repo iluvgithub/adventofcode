@@ -15,12 +15,12 @@ case class BinTree[A](left: Option[BinTree[A]], a: A, right: Option[BinTree[A]])
         case Wrap(nd) :: rest =>
           val (wraps, stub) =
             if (nd.left.isDefined && nd.right.isDefined)
-              (Wrap(nd.left.get) :: Wrap(nd.right.get) :: Nil, BranchStub(nd.a, true, true))
+              (Wrap(nd.left.get) :: Wrap(nd.right.get) :: Nil, BranchStub(nd.a, hasLeft = true, hasRight = true))
             else if (nd.left.isDefined)
-              (Wrap(nd.left.get) :: Nil, BranchStub(nd.a, true, false))
+              (Wrap(nd.left.get) :: Nil, BranchStub(nd.a, hasLeft = true, hasRight = false))
             else if (nd.right.isDefined)
-              (Wrap(nd.right.get) :: Nil, BranchStub(nd.a, false, true))
-            else (Nil, BranchStub(nd.a, false, false))
+              (Wrap(nd.right.get) :: Nil, BranchStub(nd.a, hasLeft = false, hasRight = true))
+            else (Nil, BranchStub(nd.a, hasLeft = false, hasRight = false))
 
           val newStack = wraps ++ (stub :: rest)
           loop(newStack, results)
