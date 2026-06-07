@@ -18,7 +18,7 @@ case class RoseTree[A](head: A, kindred: List[RoseTree[A]]) {
   def trace: String = fold[String](a => xs => if (xs.isEmpty) s"$a" else s"$a(${xs.mkString(",")})")
 
   def fold[B](f: A => List[B] => B): B = {
-    trait ToVisit
+    sealed trait ToVisit
 
     case class BranchStub(lbl: A, n: Int) extends ToVisit
     case class TreeWrap(t: RoseTree[A])   extends ToVisit
