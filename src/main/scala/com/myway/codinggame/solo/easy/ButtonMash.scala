@@ -9,7 +9,8 @@ object ButtonMash {
     def next(tgt: Int): Step = {
 
       val newSet: Set[Int] = ls.flatMap(transform).
-        filterNot(ls)
+        filterNot(ls).
+        filterNot( _ < tgt* 3)
 
       Step(id + 1, newSet, newSet.contains(tgt))
     }
