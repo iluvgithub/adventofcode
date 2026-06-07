@@ -12,4 +12,5 @@ class ButtonMashTest extends AnyFunSuite with Matchers {
      // solve(59) shouldBe 9
   }
 
+  
 }
