@@ -117,9 +117,7 @@ object TelephoneNumbers {
 
     val phones = l.tail
     phones
-      .foldLeft(new Forest[Char](Nil))((acc, phone) =>
-        insert(new ForestZipper(acc, Nil), phone.toList)
-      )
+      .foldLeft(new Forest[Char](Nil))((acc, phone) => insert(ForestZipper(acc, Nil), phone.toList))
       .browseDepth
       .size + 0L
   }
