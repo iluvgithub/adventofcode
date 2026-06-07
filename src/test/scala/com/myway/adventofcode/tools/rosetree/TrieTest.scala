@@ -16,10 +16,14 @@ class TrieTest extends AnyFunSuite with Matchers {
 
   test(" two chars test") {
     val trie0 = Trie.empty[Long]
-    val o: Trie [Long]= trie0.insert("ca", 1L)
+    val t: Trie [Long]= trie0.insert("ca", 1L)
+    val o: Trie [Long]= t.insert("car", 2L)
+    val q = o.insert("ca", 2L)
 
     o.search("ca") shouldBe Some(1L)
     o.search("cb") shouldBe None
+    o.search("car") shouldBe Some(2L)
+    q.search("ca") shouldBe Some(3L)
   }
 
   test(" first test") {
