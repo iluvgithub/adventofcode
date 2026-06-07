@@ -90,8 +90,7 @@ object TheResistance {
 
   }
 
-
-  val morse = Array(
+  private val morse = Array(
     ".-",
     "-...",
     "-.-.",
@@ -120,7 +119,6 @@ object TheResistance {
     "--.."
   )
 
-
   def wordToMorse(s: String): String = s.toList.map(c => morse(c - 'A')).mkString
   def solve(input: List[String]): Long = {
     val message = input.head
@@ -139,33 +137,40 @@ object TheResistance {
     countWays(message, trie)
   }
 
-  def countWays(message: String, myTrie0: MyTrie): Long = {
-    val n    = message.length
-    val memo = Array.fill[Long](n + 1)(-1L)
-    def dfs(pos: Int): Long = {
-      if (pos == n) return 1L
-      if (memo(pos) != -1L) return memo(pos)
+  private def countWays(message: String, myTrie0: MyTrie): Long = {
+    val n = message.length
 
-      var res                           = 0L
-      var optZip: Option[BinTreeZipper] = Some(myTrie0.zipper)
-      var i                             = pos
+    def dfs(
+      pos: Int,
+      memo: Map[Int, Long]
+    ): (Long, Map[Int, Long]) = if (pos == n) (1L, memo)
+    else
+      memo.get(pos) match {
+        case Some(value) => (value, memo)
+        case None =>
+          @tailrec
+          def walk(i: Int, optZip: Option[BinTreeZipper], acc: Long, memo: Map[Int, Long])
+            : (Long, Map[Int, Long]) =
+            if (i >= n || optZip.isEmpty) (acc, memo)
+            else {
+              val next: Option[BinTreeZipper] =
+                if (message.charAt(i) == '.') optZip.flatMap(_.left)
+                else optZip.flatMap(_.right)
+              next match {
+                case Some(node) if node.focus.value > 0L =>
+                  val (ways, memo1) = dfs(i + 1, memo)
+                  walk(i + 1, next, acc + node.focus.value * ways, memo1)
 
-      while (i < n && optZip.isDefined) {
-        val optCurrentNode =
-          if (message.charAt(i) == '.') optZip.flatMap(_.left)
-          else optZip.flatMap(_.right)
+                case _ => walk(i + 1, next, acc, memo)
+              }
+            }
 
-        if (optCurrentNode.isDefined && optCurrentNode.get.focus.value > 0L) {
-          res += optCurrentNode.get.focus.value * dfs(i + 1)
-        }
-        optZip = optCurrentNode
-        i += 1
+          val (res, memo1) =
+            walk(pos, Some(myTrie0.zipper), 0L, memo)
+
+          (res, memo1.updated(pos, res))
       }
 
-      memo(pos) = res
-      res
-    }
-
-    dfs(0)
+    dfs(0, Map())._1
   }
 }
