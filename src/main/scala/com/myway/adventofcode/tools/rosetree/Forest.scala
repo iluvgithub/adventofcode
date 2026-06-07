@@ -39,6 +39,8 @@ case class Forest[A](roses: List[(A, Forest[A])]) {
           }
           .mkString(",")}"
     )
+
+  def browseDepth: List[A] = fold[List[A]](_.flatMap { case (a, as) => a :: as })
 }
 
 object Forest {
@@ -97,13 +99,13 @@ case class ForestZipper[A](focus: Forest[A], context: List[ForestContext[A]]) {
       focus = Forest((a, Forest.empty[A]) :: focus.roses)
     )
 
-  def setValue(a:A): ForestZipper[A] = this.context match {
-    case Nil => this
-    case x::xs => this.copy(context = x.copy(parent = a):: xs)
+  def setValue(a: A): ForestZipper[A] = this.context match {
+    case Nil     => this
+    case x :: xs => this.copy(context = x.copy(parent = a) :: xs)
   }
 
-  def getFocusValue:Option[A] = this.context match {
-    case Nil => None
-    case x::_ => Some(x.parent)
+  def getFocusValue: Option[A] = this.context match {
+    case Nil    => None
+    case x :: _ => Some(x.parent)
   }
 }

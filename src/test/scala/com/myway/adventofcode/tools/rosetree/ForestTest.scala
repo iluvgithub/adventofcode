@@ -6,18 +6,20 @@ import org.scalatest.matchers.should.Matchers
 
 class ForestTest extends AnyFunSuite with Matchers {
 
+  val forest: Forest[Char] = branch(
+    single('a') :: (
+      'b',
+      branch(
+        List(single('e'), single('f')) ++ (single('d') :: Nil)
+      )
+    ) :: Nil
+  )
   test(" trace") {
-// arrange
-    val forest: Forest[Char] = branch(
-      single('a') :: (
-        'b',
-        branch(
-          List(single('e'), single('f')) ++ (single('d') :: Nil)
-        )
-      ) :: Nil
-    )
-    // act && assert
     forest.trace shouldBe "a,b(e,f,d)"
+  }
+
+  test("browseDepth") {
+    forest.browseDepth shouldBe List('a', 'b', 'e', 'f', 'd')
   }
 
 }
@@ -26,8 +28,8 @@ class ForestZipperTest extends AnyFunSuite with Matchers {
 
   test("build ") {
     val zip0: ForestZipper[Char] = Forest.initZipper
-    val zip1 = zip0.prepend('d').prepend('c').prepend('b')
-    val optZip = zip1.downBy('c').map(_.prepend('f').prepend('e'))
+    val zip1                     = zip0.prepend('d').prepend('c').prepend('b')
+    val optZip                   = zip1.downBy('c').map(_.prepend('f').prepend('e'))
 
     optZip.isDefined shouldBe true
     val zip = optZip.get
@@ -36,7 +38,7 @@ class ForestZipperTest extends AnyFunSuite with Matchers {
 
     f.trace shouldBe "b,c(e,f),d"
 
-    val zipc =zip.upRoot.downBy('c').get
+    val zipc = zip.upRoot.downBy('c').get
     zipc.getFocusValue.get shouldBe 'c'
 
     zipc.setValue('x').upRoot.focus.trace shouldBe "b,x(e,f),d"
