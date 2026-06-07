@@ -67,11 +67,15 @@ case class ForestZipper[A](focus: Forest[A], context: List[ForestContext[A]]) {
       ForestZipper(af._2, ForestContext(left, af._1, right) :: context)
     )
   }
-  def search(a: A): Option[Int] =
-    List.range(0, focus.roses.length).find(i => focus.roses(i)._1.equals(a))
 
-  def downBy(a: A): Option[ForestZipper[A]] = for {
-    i <- search(a)
+  def search[K](get: A => K, k: K): Option[Int] =
+    List.range(0, focus.roses.length).find(i => get(focus.roses(i)._1).equals(k))
+
+  def search(a: A): Option[Int] = search(identity, a)
+
+  def downBy(a: A): Option[ForestZipper[A]] = downBy(identity, a)
+  def downBy[K](get: A => K, k: K): Option[ForestZipper[A]] = for {
+    i <- search(get, k)
     z <- down(i)
   } yield z
 
