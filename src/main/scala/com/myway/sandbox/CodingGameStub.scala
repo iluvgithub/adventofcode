@@ -13,9 +13,9 @@ object CodingGameStub extends App {
     Console.err.println("Debug messages...")
   }
 
-  val size = readLine.toInt
+  val n = readLine.toInt
   val angle = readLine.toInt
-  val in: List[String] = List.range(0, size).foldLeft[List[String]](Nil)((acc, _) => acc ++ List(readLine))
+  val in: List[String] = List.range(0, n).foldLeft[List[String]](Nil)((acc, _) => acc ++ List(readLine))
 
   in.map(println)
   println("answer")
