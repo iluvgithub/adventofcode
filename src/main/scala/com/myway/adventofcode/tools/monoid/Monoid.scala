@@ -24,7 +24,6 @@ object MonoidSyntax {
     override def add(left: Int, right: Int): Int = left * right
   }
 
-
   implicit val longPlusMonoid: Monoid[Long] = new Monoid[Long] {
     override def neutral: Long = 0L
 
