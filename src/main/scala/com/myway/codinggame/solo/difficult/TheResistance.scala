@@ -2,6 +2,111 @@ package com.myway.codinggame.solo.difficult
 
 object TheResistance {
 
+  import scala.annotation.tailrec
+  case class BinTrie(left: Option[BinTrie], value: Long, right: Option[BinTrie]) {
+    def this(v: Long) = this(None, v, None)
+
+    def fold[B](f: Option[B] => Long => Option[B] => B): B =
+      f(left.map(_.fold(f)))(value)(right.map(_.fold(f)))
+
+    def trace: String = fold[String](op1 =>
+      l =>
+        op2 =>
+          if (op1.isEmpty && op2.isEmpty) s"$l"
+          else s"$l(${op1.getOrElse("")},${op2.getOrElse("")})"
+    )
+
+  }
+  def leaf(l: Long): BinTrie = BinTrie(None, l, None)
+
+  case class BinTreeContext(e: Either[(Long, Option[BinTrie]), (Long, Option[BinTrie])])
+  case class BinTreeZipper(focus: BinTrie, contexts: List[BinTreeContext]) {
+
+    def this(f: BinTrie) = this(f, Nil)
+    def left: Option[BinTreeZipper] = focus.left match {
+      case None => None
+      case Some(l) =>
+        Some(
+          BinTreeZipper(l, BinTreeContext(Right((focus.value, focus.right))) :: contexts)
+        )
+    }
+
+    def right: Option[BinTreeZipper] = focus.right match {
+      case None => None
+      case Some(l) =>
+        Some(
+          BinTreeZipper(l, BinTreeContext(Left((focus.value, focus.left))) :: contexts)
+        )
+    }
+
+    def up: Option[BinTreeZipper] = contexts match {
+      case Nil => None
+      case c :: cs =>
+        Some(
+          BinTreeZipper(
+            c.e.fold(
+              pair => BinTrie(pair._2, pair._1, Some(focus)),
+              pair => BinTrie(Some(focus), pair._1, pair._2)
+            ),
+            cs
+          )
+        )
+    }
+
+    def upRoot: BinTreeZipper = up match {
+      case None    => this
+      case Some(z) => z.upRoot
+    }
+
+    def depthToUp: Int = depthToUp(0)
+    def depthToUp(o: Int): Int = up match {
+      case None    => o
+      case Some(z) => z.depthToUp(o + 1)
+    }
+
+    def setOnFocus(newA: Long): BinTreeZipper = this.copy(focus = focus.copy(value = newA))
+    def extendLeft(bin: BinTrie): BinTreeZipper =
+      this.copy(focus = focus.copy(left = Some(bin)))
+    def extendRight(bin: BinTrie): BinTreeZipper =
+      this.copy(focus = focus.copy(right = Some(bin)))
+
+  }
+
+  case class MyTrie(zipper: BinTreeZipper) {
+
+    def insert(w: String, v: Long): MyTrie = insertChars(w.toList, v).upRoot
+    @tailrec
+    private def insertChars(l: List[Char], v: Long): MyTrie = l match {
+      case Nil =>
+        this.copy(zipper = this.zipper.setOnFocus(this.zipper.focus.value + v))
+
+      case x :: xs =>
+        val zp = (if (x == '.') zipper.left else zipper.right) match {
+          case None =>
+            if (x == '.') zipper.extendLeft(leaf(0L)).left.get
+            else zipper.extendRight(leaf(0L)).right.get
+
+          case Some(z) => z
+        }
+        MyTrie(zp).insertChars(xs, v)
+    }
+
+    def search(s: String): Option[Long] = searchChars(s.toList)
+
+    @tailrec
+    private def searchChars(cs: List[Char]): Option[Long] = cs match {
+      case Nil => Some(zipper.focus.value)
+      case x :: xs =>
+        (if (x == '.') zipper.left else zipper.right) match {
+          case None    => None
+          case Some(z) => MyTrie(z).searchChars(xs)
+        }
+    }
+
+    def upRoot: MyTrie = MyTrie(zipper.upRoot)
+
+  }
+
   val morseMap: Map[Char, String] = Map(
     'A' -> ".-",
     'B' -> "-...",
@@ -31,45 +136,6 @@ object TheResistance {
     'Z' -> "--.."
   )
 
-  case class Bag[A](bagMap: Map[A, Long]) {
-
-    def this() = this(Map[A, Long]())
-
-    def this(a: A, l: Long) = this(Map[A, Long](a -> l))
-
-    def this(a: A) = this(a, 1L)
-
-    lazy val total: Long = this.bagMap.values.sum
-
-    def addMany(a: A, l: Long): Bag[A] = Bag(bagMap.get(a) match {
-      case None     => this.bagMap + (a     -> l)
-      case Some(l0) => this.bagMap - a + (a -> (l + l0))
-    })
-
-    def add(a: A): Bag[A] = this.addMany(a, 1L)
-
-    def get(a: A): Long = this.bagMap.getOrElse(a, 0L)
-
-    def map[B](f: A => B): Bag[B] = flatMap(a => new Bag(f(a)))
-
-    private def mapValues(f: Long => Long): Bag[A] =
-      Bag(this.bagMap.toList.map { case (k, v) => (k, f(v)) }.toMap)
-
-    def merge(that: Bag[A]): Bag[A] =
-      that.bagMap.keySet.foldLeft(this)((bg, k) => bg.addMany(k, that.get(k)))
-
-    def flatMap[B](g: A => Bag[B]): Bag[B] =
-      this.bagMap.keySet.foldLeft[Bag[B]](new Bag())((bg, a) =>
-        bg.merge(g(a).mapValues(_ * this.get(a)))
-      )
-
-    def cross[B](that: Bag[B]): Bag[(A, B)] = Bag((for {
-      ak <- this.bagMap.toList
-      bh <- that.bagMap.toList
-    } yield ((ak._1, bh._1), ak._2 * bh._2)).toMap)
-
-  }
-
   private def wordToMorse(s: String): String = s.toList.map(c => morseMap(c)).mkString
 
   def solve(l: List[String]): Long = {
@@ -80,50 +146,35 @@ object TheResistance {
     solve(message, setWordsMorse)
   }
 
-  private def solve(message: String, setWordsMorse: Map[String, Int]): Long = if (message.isEmpty)
-    1L
-  else {
-    val max = setWordsMorse.keySet.map(_.length).max
-    if (message.length > 2 * max) {
-      val mid0 = message.length / 2
-      setWordsMorse.keySet.toList
-        .flatMap { w =>
-          List.range(0, w.length).map(j => (j, w))
-        }
-        .foldLeft(0L) { (o, pair) =>
-          val key       = pair._2
-          val j         = pair._1
-          val left      = message.take(mid0 - j)
-          val midString = message.drop(mid0 - j).take(key.length)
-          val right     = message.drop(mid0 - j + key.length)
-          o + solve(left, setWordsMorse) * setWordsMorse.getOrElse(midString, 0) * solveShort(
-            right,
-            setWordsMorse
-          )
-        }
-    } else
-      solveShort(message, setWordsMorse)
+  case class Step(zippers: List[BinTreeZipper], score: Map[Int, Long])
+  private def solve(message: String, setWordsMorse: Map[String, Int]): Long = {
 
-  }
+    val wordsTrie: MyTrie =
+      setWordsMorse.keySet.foldLeft(MyTrie(new BinTreeZipper(new BinTrie(0L))))((tr, w) =>
+        tr.insert(w, setWordsMorse(w))
+      )
 
-  private def solveShort(message: String, setWordsMorse: Map[String, Int]): Long = {
+    val out: Step = List
+      .range(0, message.length)
+      .foldLeft(Step(wordsTrie.zipper :: Nil, Map(0 -> 1L))) { (step, i) =>
+        val c = message.charAt(i)
+        val method: List[(BinTreeZipper, Long)] =
+          step.zippers
+            .map(z => if (c == '.') z.left else z.right)
+            .filter(_.isDefined)
+            .map(_.get)
+            .map(z => {
+              val k = i-(z.depthToUp - 1)
+              val l = z.focus.value * step.score(k)
+              (z, l)
+            })
+        val sum                         = method.map(_._2).sum
+        val remain: List[BinTreeZipper] = wordsTrie.zipper :: method.map(_._1)
 
-    val initBag = setWordsMorse.keySet.foldLeft(new Bag[String]().addMany("", 1L))((bg, k) =>
-      bg.addMany(k, 0 + setWordsMorse(k))
-    )
-    val outBag = List.range(1, message.length + 1).foldLeft(initBag) { (bag, i) =>
-      val w: String                     = message.take(i)
-      val pairs: List[(String, String)] = split(w)
-      pairs.foldLeft(bag) { (bg, pair) =>
-        val o: Long = bag.get(pair._2) * setWordsMorse.getOrElse(pair._1, 0)
-        if (o > 0L) bg addMany (w, o) else bg
+        Step(remain, step.score + ((i + 1) -> sum))
       }
-    }
 
-    outBag.get(message)
+    out.score(message.length)
   }
-
-  def split(s: String): List[(String, String)] =
-    List.range(1, s.length).map(i => (s.take(i), s.drop(i)))
 
 }
