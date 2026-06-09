@@ -39,15 +39,16 @@ object MoveInMaze {
   }
 
   private def find(m: Map[Point, Char]): Char => Option[Point] = c =>
-    m.toList.find { case (p, v) => v.equals(c) }.map(_._1)
+    m.toList.find { case (_, v) => v.equals(c) }.map(_._1)
 
   def solve(l: List[String]): List[String] = {
+    val Array(w, h)           = (l.head split " ").filter(_ != "").map(_.toInt)
     val pts: Map[Point, Char] = Point.parse(l.tail)
     val start                 = find(pts)('S').get
-    Point.display(evolve(pts - start + (start -> '0'), Map(start -> '0')))
+    Point.display(evolve(w, h, pts - start + (start -> '0'), Map(start -> '0')))
   }
 
-  def evolve(pts: Map[Point, Char], front: Map[Point, Char]): Map[Point, Char] = {
+  def evolve(w: Int, h: Int, pts: Map[Point, Char], front: Map[Point, Char]): Map[Point, Char] = {
     val v0    = front.values.max
     val nextV = next(v0)
     val newFront: Map[Point, Char] = front.toList
@@ -55,6 +56,7 @@ object MoveInMaze {
       .map(_._1)
       .flatMap(_.neighbors)
       .toSet
+      .map(throughTorus(w, h))
       .filter(p => pts.getOrElse(p, '?') == '.')
       .map(p => p -> nextV)
       .toMap
@@ -62,7 +64,7 @@ object MoveInMaze {
     else {
       val newPoints =
         newFront.toList.foldLeft(pts)((acc, pair) => acc - pair._1 + (pair._1 -> pair._2))
-      evolve(newPoints, newFront)
+      evolve(w, h, newPoints, newFront)
     }
   }
 
@@ -70,4 +72,10 @@ object MoveInMaze {
     if (c == '9') 'A'
     else (c.toInt + 1).toChar
 
+  def throughTorus(w: Int, h: Int): Point => Point = p =>
+    if (p.x < 0) p.copy(x = p.x + w)
+    else if (p.y < 0) p.copy(y = p.y + h)
+    else if (p.y >= h) p.copy(y = p.y - h)
+    else if (p.x >= w) p.copy(x = p.x - w)
+    else p
 }

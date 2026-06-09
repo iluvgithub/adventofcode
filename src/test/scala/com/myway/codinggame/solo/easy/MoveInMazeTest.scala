@@ -24,4 +24,24 @@ class MoveInMazeTest extends AnyFunSuite with Matchers {
       "##########")
   }
 
+  test(" browse cylinder") {
+    val o=  MoveInMaze.solve(
+        List(
+          "10 5",
+          "#.########",
+          "#.##..####",
+          "..##..#...",
+          "####..#S##",
+          "#....#####")
+    )
+    
+    o shouldBe  List(
+      "#7########",
+      "#6##EF####",
+      "45##DE#123",
+      "####CD#0##",
+      "#89AB#####")
+  }
+
+
 }
