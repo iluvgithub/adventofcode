@@ -8,6 +8,9 @@ case class Point(x: Int, y: Int) {
 
 object Point {
 
+  def find(m: Map[Point, Char]): Char => Option[Point] = c =>
+    m.toList.find { case (_, v) => v.equals(c) }.map(_._1)
+
   def fromList(l: List[String]): List[Point] = l.map(from)
 
   def from(s: String): Point = {
