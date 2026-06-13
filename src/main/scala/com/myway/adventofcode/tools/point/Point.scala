@@ -2,14 +2,22 @@ package com.myway.adventofcode.tools.point
 
 case class Point(x: Int, y: Int) {
 
-  def allFour: List[Point] = Direction.allFour.map(_.move(this))
-
+  // def allFour: List[Point] = Direction.allFour.map(_.move(this))
+  def allFour: List[Point] = List(
+    Point(x - 1, y),
+    Point(x + 1, y),
+    Point(x, y + 1),
+    Point(x, y - 1)
+  )
 }
 
 object Point {
 
   def find(m: Map[Point, Char]): Char => Option[Point] = c =>
     m.toList.find { case (_, v) => v.equals(c) }.map(_._1)
+
+  def findAll(m:Map[Point,Char]):Char=>List[Point] =  c =>
+    m.toList.filter { case (_, v) => v.equals(c) }.map(_._1)
 
   def fromList(l: List[String]): List[Point] = l.map(from)
 

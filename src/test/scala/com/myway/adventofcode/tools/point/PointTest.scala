@@ -73,4 +73,26 @@ class PointTest extends AnyFunSuite with Matchers {
       "Oc."
     )
   }
+
+
+  test(" find") {
+    // arrange
+    val grid: List[String] = List(
+      "...........X..",
+      ".......#...#..",
+      "..............",
+      "..X....#......",
+      "..............",
+      "..#......#....",
+      "..............",
+      ".........#.#..",
+      ".............."
+    )
+
+    val map = Point.parse(grid)
+    // act
+    val all = Point.findAll(map)('X')
+    // assert
+    all.toSet shouldBe Set(Point(11,0), Point(2,3))
+  }
 }
