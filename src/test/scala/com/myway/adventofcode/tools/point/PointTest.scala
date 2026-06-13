@@ -74,7 +74,6 @@ class PointTest extends AnyFunSuite with Matchers {
     )
   }
 
-
   test(" find") {
     // arrange
     val grid: List[String] = List(
@@ -93,6 +92,6 @@ class PointTest extends AnyFunSuite with Matchers {
     // act
     val all = Point.findAll(map)('X')
     // assert
-    all.toSet shouldBe Set(Point(11,0), Point(2,3))
+    all.toSet shouldBe Set(Point(11, 0), Point(2, 3))
   }
 }
