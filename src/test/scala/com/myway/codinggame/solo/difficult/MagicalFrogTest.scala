@@ -25,6 +25,6 @@ class MagicalFrogTest extends AnyFunSuite with Matchers {
 
 
   test(" mass") {
-   // solve(1000000000, 20) shouldBe 503933661
+    solve(1000000000, 20) shouldBe 503933661
   }
 }

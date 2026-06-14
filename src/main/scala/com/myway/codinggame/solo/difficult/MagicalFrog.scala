@@ -2,6 +2,7 @@ package com.myway.codinggame.solo.difficult
 
 object MagicalFrog {
 
+  val K = BigInt(1000000000L + 7)
   import scala.annotation.tailrec
   def toBits(n: Int): List[Boolean] = {
     @tailrec
@@ -18,33 +19,48 @@ object MagicalFrog {
     def add(left: X, right: X): X
 
     def power(x: X, n: Int): X =
-      toBits(n).reverse
+      toBits(n)
+        .reverse
         .foldLeft((neutral, x))((acc, b) =>
-          (if (b) add(acc._2, acc._1) else acc._1, add(acc._2, acc._2))
+          (if (b) add(acc._2, acc._1)  else acc._1, add(acc._2, acc._2))
         )
         ._1
   }
+  case class SquareMatrix(v: Vector[Vector[BigInt]]) {
+    private val n = v.length
 
-  case class SquareMatrix(v: List[List[BigInt]]) {
     def mult(that: SquareMatrix): SquareMatrix = {
       val cols = that.v.transpose
+
       SquareMatrix(
-        v.map { row =>
-          cols.map { col =>
-            row.zip(col).map { case (a, b) => a * b }.sum
-          }
+        Vector.tabulate(n, n) { (i, j) =>
+          v(i).zip(cols(j)).foldLeft(BigInt(0)) {
+            case (acc, (a, b)) => acc + a * b
+          } % K
         }
       )
     }
 
-    def vect(x: List[BigInt]): List[BigInt] =
-      List.range(0, x.size).map(i => List.range(0, x.size).map(k => v(i)(k) * x(k)).sum)
+    def vect(x: Vector[BigInt]): Vector[BigInt] =
+      Vector.tabulate(n) { i =>
+        var s = BigInt(0)
+        var k = 0
+
+        while (k < n) {
+          s += v(i)(k) * x(k)
+          k += 1
+        }
+
+        s
+      }
   }
 
   def squareMonoid(n: Int): Monoid[SquareMatrix] = new Monoid[SquareMatrix] {
 
     override def neutral: SquareMatrix = SquareMatrix(
-      List.range(0, n).map(i => List.range(0, n).map(j => if (i == j) BigInt(1) else BigInt(0)))
+      List.range(0, n).map(
+        i => List.range(0, n).map(j => if (i == j) BigInt(1) else BigInt(0)).toVector
+      ).toVector
     )
 
     override def add(left: SquareMatrix, right: SquareMatrix): SquareMatrix = left.mult(right)
@@ -57,21 +73,24 @@ object MagicalFrog {
       if (n <= k) map0(n)
       else {
 
+        val llist = List
+          .range(0, k - 1)
+          .map(i => List.range(0, k).map(j => if (j == i + 1) BigInt(1) else BigInt(0))) ++ List(
+          List.range(0, k).map(_ => BigInt(1))
+        )
         val matrix: SquareMatrix = SquareMatrix(
-          List
-            .range(0, k - 1)
-            .map(i => List.range(0, k).map(j => if (j == i + 1) BigInt(1) else BigInt(0))) ++ List(
-            List.range(0, k).map(_ => BigInt(1))
-          )
+          llist.map(_.toVector).toVector
         )
         val u0: List[BigInt] = List.range(0, k).map(kk => map0(kk + 1))
+
+
         val exp = squareMonoid(k)
           .power(matrix, n.toInt - 1)
-        val out = exp.vect(u0)
+        val out = exp.vect(u0.toVector)
         out.head
       }
 
-    o.mod(BigInt(1000000000L + 7)).toInt
+    o.mod(K).toInt
   }
 
   def init(k: Long, map: Map[Long, BigInt]): Map[Long, BigInt] = if (map.contains(k)) map
