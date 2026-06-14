@@ -8,4 +8,10 @@ trait Functor[F[A]] {
 
 }
 
-object FunctorObj {}
+object FunctorObj {
+
+  implicit class FunctorOps[F[_], A](fa: F[A])(implicit F: Functor[F]) {
+    def map[B](f: A => B): F[B] =
+      F.map(fa, f)
+  }
+}
