@@ -8,7 +8,7 @@ class FunctorTest extends AnyFunSuite with Matchers {
   test(" for yield with map") {
     // arrange
     case class Wrapper[A](a: A)
-    implicit val wrapFunctor = new Functor[Wrapper] {
+    implicit val wrapFunctor: Functor[Wrapper] = new Functor[Wrapper] {
       override def map[A, B](fa: Wrapper[A], f: A => B): Wrapper[B] =
         Wrapper(f(fa.a))
     }
@@ -29,11 +29,11 @@ class FunctorTest extends AnyFunSuite with Matchers {
     case class WrapperFilter[A](o: Option[A]) {
       def this(a: A) = this(Some(a))
     }
-    implicit val wrapFunctor = new Functor[WrapperFilter] {
+    implicit val wrapFunctor: Functor[WrapperFilter] = new Functor[WrapperFilter] {
       override def map[A, B](fa: WrapperFilter[A], f: A => B): WrapperFilter[B] =
         WrapperFilter(fa.o.map(f))
     }
-    implicit val wrapFilterFunctor = new Filterable[WrapperFilter] {
+    implicit val wrapFilterFunctor: Filterable[WrapperFilter] = new Filterable[WrapperFilter] {
       override def withFilter[A](fa: WrapperFilter[A], p: A => Boolean): WrapperFilter[A] =
         if (fa.o.exists(p)) fa else WrapperFilter[A](None)
     }
