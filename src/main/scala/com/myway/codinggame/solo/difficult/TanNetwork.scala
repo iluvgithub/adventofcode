@@ -87,10 +87,11 @@ object TanNetwork {
   }
   case class Node(id: String, name: String, lat: Double, long: Double, stopType: Int) {
     def dist(that: Node): Double = {
-      val x = (that.long - this.long) * Math.cos((this.lat + that.lat) / 2)
+      val x = (that.long - this.long) * Math.cos((toRadian(this.lat) + toRadian(that.lat)) / 2)
       val y = that.lat - this.lat
       6371.0 * Math.sqrt(x * x + y * y)
     }
+    private def toRadian(degr: Double): Double = 2 * Math.PI * degr / 360.0
   }
   case class Edge(from: String, to: String) {
     def swap = Edge(to, from)
