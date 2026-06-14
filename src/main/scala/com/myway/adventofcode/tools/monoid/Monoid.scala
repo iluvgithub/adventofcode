@@ -6,9 +6,23 @@ trait Monoid[X] {
 
   def add(left: X, right: X): X
 
+  def power(x: X, n: Int) = MonoidSyntax
+    .toBits(n).reverse
+    .foldLeft((neutral, x))((acc, b) => (if (b) add(acc._2, acc._1) else acc._1, add(acc._2, acc._2)))
+    ._1
 }
 
 object MonoidSyntax {
+
+  import scala.annotation.tailrec
+  def toBits(n: Int): List[Boolean] = {
+    @tailrec
+    def loop(x: Int, acc: List[Boolean]): List[Boolean] =
+      if (x <= 0) acc
+      else loop(x / 2, (x % 2 > 0) :: acc)
+
+    loop(n, Nil)
+  }
 
   @inline final def apply[A](implicit ev: Monoid[A]): Monoid[A] = ev
 
