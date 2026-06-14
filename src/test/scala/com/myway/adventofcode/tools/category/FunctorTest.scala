@@ -29,13 +29,13 @@ class FunctorTest extends AnyFunSuite with Matchers {
     case class WrapperFilter[A](o: Option[A]) {
       def this(a: A) = this(Some(a))
     }
-    implicit val wrapFunctor: Functor[WrapperFilter] = new Functor[WrapperFilter] {
-      override def map[A, B](fa: WrapperFilter[A], f: A => B): WrapperFilter[B] =
-        WrapperFilter(fa.o.map(f))
-    }
-    implicit val wrapFilterFunctor: Filterable[WrapperFilter] = new Filterable[WrapperFilter] {
+
+    implicit val wrapFilterFunctor: FilterableFunctor[WrapperFilter] = new FilterableFunctor[WrapperFilter] {
       override def withFilter[A](fa: WrapperFilter[A], p: A => Boolean): WrapperFilter[A] =
         if (fa.o.exists(p)) fa else WrapperFilter[A](None)
+
+      override def map[A, B](fa: WrapperFilter[A], f: A => B): WrapperFilter[B] =
+        WrapperFilter(fa.o.map(f))
     }
 
     val w = new WrapperFilter[Int](-3)

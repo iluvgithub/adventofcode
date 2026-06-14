@@ -6,7 +6,7 @@ trait Functor[F[_]] {
 
   def lift[A, B](f: A => B): F[A] => F[B] = fa => map(fa, f)
 
-  def inflate[A](fa: F[A]): F[Option[A]] = map(fa, Some(_))
+  def inflate[A](fa: F[A]): F[Option[A]] = map[A, Option[A]](fa, Some(_))
 }
 
 object FunctorObj {
@@ -43,7 +43,7 @@ object FilterableObj {
         implicitly[Functor[F]].inflate(fa).map(_.filter(p))
       )
 
-  implicit val eitherFilterableFunctor: FilterableFunctor[({type λ[+α] = Either[String, α]})#λ] =
+  implicit val eitherFilterableFunctor: FilterableFunctor[({ type λ[+α] = Either[String, α] })#λ] =
     new FilterableFunctor[({ type λ[+α] = Either[String, α] })#λ] {
 
       override def withFilter[A](fa: Either[String, A], p: A => Boolean): Either[String, A] =
