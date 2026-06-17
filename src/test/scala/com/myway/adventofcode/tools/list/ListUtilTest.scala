@@ -57,13 +57,30 @@ class ListUtilTest extends AnyFunSuite with Matchers {
       List(1, 3, 2),
       List(1, 2, 3)
     )
+
+
+    ListUtil.permutations(1 :: Nil) shouldBe List(1) :: Nil
+  }
+
+  test(" permutations 2") {
+    val is = List("1", "2", "3")
+    ListUtil.permutations2(is) shouldBe List(
+      List("1", "2", "3"),
+      List("1", "3", "2"),
+      List("2", "1", "3"),
+      List("2", "3", "1"),
+      List("3", "1", "2"),
+      List("3", "2", "1")
+    )
+    ListUtil.permutations2(Nil) shouldBe Nil
+    ListUtil.permutations2(1 :: Nil) shouldBe List(1) :: Nil
   }
 
   test("maximum segment sum") {
     // arrange
     val diff  = List(-1, 2, -2, -1, 4)
     val diff1 = List(-1, 2, -2, -1, 4, -1, 3)
-    val l = List(-2, 1, -3, 4, -1, 2, 1, -5, 4)
+    val l     = List(-2, 1, -3, 4, -1, 2, 1, -5, 4)
 
     // act
     val out  = ListUtil.maxSegSum(diff)

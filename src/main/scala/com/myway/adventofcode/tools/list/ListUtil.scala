@@ -24,6 +24,15 @@ object ListUtil {
       } yield l ++ (a0 :: r)
   }
 
+
+  def permutations2[A](xs: List[A]): List[List[A]] = if (xs.length == 1) xs :: Nil
+  else
+    for {
+      x <- xs
+      xsWithoutX = xs.filter(_ != x)
+      rest <- permutations2(xsWithoutX)
+    } yield x :: rest
+
   def splits[A](as: List[A]): List[(List[A], List[A])] =
     List.range(0, as.size + 1).map(i => (as.take(i), as.drop(i)))
 
