@@ -29,6 +29,8 @@ trait Expr {
 
     def print: String = s"(${self.print} / ${that.print})"
   }
+
+
 }
 
 object Expr {
@@ -41,5 +43,11 @@ object Expr {
     }
 
   val ZERO: Expr = literal(0)
+
+  def sin(expr: Expr):Expr = new Expr {
+    override def eval: Double = Math.sin(expr.eval)
+
+    override def print: String = s"sin(${expr.print})"
+  }
 
 }

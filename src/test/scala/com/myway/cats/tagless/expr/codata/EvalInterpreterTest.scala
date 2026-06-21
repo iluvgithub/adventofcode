@@ -1,6 +1,5 @@
 package com.myway.cats.tagless.expr.codata
 
-import com.myway.cats.tagless.expr.data.DoubleInterpreter
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
@@ -18,13 +17,19 @@ class EvalInterpreterTest extends AnyFunSuite with Matchers {
     onePlusTwoTimesThree.eval shouldBe 9
     oneMinusTwo.eval shouldBe -1
     oneDivTwo.eval shouldBe 0.5
+
+    sin(onePlusTwo).eval shouldBe 0.1411200080598672
   }
 
 
   test("print") {
     onePlusTwo.print shouldBe "(1.0 + 2.0)"
-    onePlusTwoTimesThree.print  shouldBe "((1.0 + 2.0) * 3.0)"
+    onePlusTwoTimesThree.print shouldBe "((1.0 + 2.0) * 3.0)"
     oneMinusTwo.print shouldBe "(1.0 - 2.0)"
     oneDivTwo.print shouldBe "(1.0 / 2.0)"
+
+
+    sin(onePlusTwo).print shouldBe "sin((1.0 + 2.0))"
+
   }
 }
