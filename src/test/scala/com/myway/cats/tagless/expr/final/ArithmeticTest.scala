@@ -36,7 +36,7 @@ class ArithmeticTest extends AnyFunSuite with Matchers {
     trigonometry.sin(onePlusTwo(arithmetic))
 
   test("eval double sin") {
-    sinOnePlusTwo(DoubleArithmetic, DoubleTrigonometry) shouldBe "0.1411200080598672"
+    sinOnePlusTwo(DoubleArithmetic, DoubleTrigonometry) shouldBe 0.1411200080598672
   }
 
   test("print double") {
@@ -48,7 +48,7 @@ class ArithmeticTest extends AnyFunSuite with Matchers {
 
 
   test("print double sin") {
-    sinOnePlusTwo(PrintArithmetic, PrintTrigonometry) shouldBe ""
+    sinOnePlusTwo(PrintArithmetic, PrintTrigonometry) shouldBe "sin((1.0 + 2.0))"
 
   }
 
