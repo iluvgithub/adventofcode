@@ -12,7 +12,10 @@ object SimpleMain {
     type Program[A] = () => A
 
     val inOutSimple: Simple = Simple(println, StdIn.readLine)
-    val (name, rating) = Program.quiz[Program](inOutSimple, inOutSimple)()
+    implicit val C : Controls[Program] =inOutSimple
+    implicit val L : Layout[Program] = inOutSimple
+    val quizOut: Program[(String, Int)] = Program.quiz[Program]
+    val (name, rating) = quizOut()
 
     println(s"QUIZ result $name, $rating")
   }
