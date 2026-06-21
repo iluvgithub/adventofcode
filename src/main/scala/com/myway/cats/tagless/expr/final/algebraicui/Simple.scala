@@ -11,7 +11,7 @@ object SimpleMain {
   def main(arr: Array[String]): Unit = {
     type Program[A] = () => A
 
-    val inOutSimple: Simple = new Simple(println, StdIn.readLine)
+    val inOutSimple: Simple = Simple(println, StdIn.readLine)
     val (name, rating) = Program.quiz[Program](inOutSimple, inOutSimple)()
 
     println(s"QUIZ result $name, $rating")
@@ -53,7 +53,7 @@ case class Simple(printer: String => Unit, reader: () => String) extends Control
     () => {
       def loop(): A = {
         printer(label)
-        options.zipWithIndex.foreach { case ((desc, _), idx) =>
+        options.foreach { case (desc, idx) =>
           printer(s"$idx: $desc")
         }
         Try(reader()).fold(
@@ -62,9 +62,10 @@ case class Simple(printer: String => Unit, reader: () => String) extends Control
             loop()
           },
           idx => {
-            if (idx.toInt >= 0 && idx.toInt < options.size) options(idx.toInt)._2
+            if (idx.toInt >= 1 && idx.toInt <= options.size)
+              options(idx.toInt - 1)._2
             else {
-              println("Please enter a valid number.")
+              printer("Please enter a valid number.")
               loop()
             }
           }

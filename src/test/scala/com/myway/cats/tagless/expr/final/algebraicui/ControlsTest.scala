@@ -9,7 +9,7 @@ class ControlsTest extends AnyFunSuite with Matchers {
 
   test("control  ") {
     // arrange
-    val inputs = "John Doo" :: "42" :: "0" :: Nil
+    val inputs = "John Doo" :: "42" :: "3" :: Nil
     var idx = 0
     val reader: () => String = () => {
       val out = inputs(idx)
@@ -18,9 +18,9 @@ class ControlsTest extends AnyFunSuite with Matchers {
     }
     var output: List[String] = Nil
     val printer: String => Unit = s => {
-      output ++ List(s)
+      output = output ++ List(s)
     }
-    val inOutSimple: Simple = new Simple(printer, reader)
+    val inOutSimple: Simple = Simple(printer, reader)
 
     val program: Program[(String, Int)] = Program.quiz[Program](inOutSimple, inOutSimple)
     // act
@@ -28,7 +28,23 @@ class ControlsTest extends AnyFunSuite with Matchers {
     val (name, rating) = program()
     // assert
     name shouldBe inputs.head
-    rating shouldBe inputs(2).toInt + 1
+    rating shouldBe inputs(2).toInt
+    output shouldBe List(
+      "What is your name? (e.g. John Doe):",
+      "Tagless final is the greatest thing ever",
+      "1: Strongly disagree",
+      "2: Disagree",
+      "3: Neutral",
+      "4: Agree",
+      "5: Strongly agree",
+      "Please enter a valid number.",
+      "Tagless final is the greatest thing ever",
+      "1: Strongly disagree",
+      "2: Disagree",
+      "3: Neutral",
+      "4: Agree",
+      "5: Strongly agree")
+
 
   }
 
