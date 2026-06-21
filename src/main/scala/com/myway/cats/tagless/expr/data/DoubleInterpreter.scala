@@ -20,3 +20,15 @@ object PrintInterpreter {
       case Literal(value) => value.toString
     }
 }
+
+
+object BigDecimalInterpreter {
+  def eval(expr: Expr): BigDecimal =
+    expr match {
+      case Add(l, r) => eval(l) + eval(r)
+      case Sub(l, r) => eval(l) - eval(r)
+      case Mul(l, r) => eval(l) * eval(r)
+      case Div(l, r) => eval(l) / eval(r)
+      case Literal(value) => BigDecimal(value)
+    }
+}
