@@ -49,7 +49,18 @@ class ArithmeticTest extends AnyFunSuite with Matchers {
 
   test("print double sin") {
     sinOnePlusTwo(PrintArithmetic, PrintTrigonometry) shouldBe "sin((1.0 + 2.0))"
-
   }
 
+
+
+  test("eval BigDecimal") {
+    onePlusTwo(DoubleArithmetic) shouldBe BigDecimal(3.0)
+    onePlusTwoTimesThree(DoubleArithmetic) shouldBe BigDecimal (9.0)
+    oneMinusTwo(DoubleArithmetic) shouldBe BigDecimal(-1.0)
+    oneDivTwo(DoubleArithmetic) shouldBe BigDecimal(0.5)
+  }
+
+  test("eval BigDecimal sin") {
+    sinOnePlusTwo(DoubleArithmetic, DoubleTrigonometry) shouldBe BigDecimal(0.1411200080598672)
+  }
 }
