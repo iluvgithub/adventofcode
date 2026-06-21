@@ -14,6 +14,11 @@ trait Arithmetic[Expr] {
   def literal(value: Double): Expr
 }
 
+// algebra extension
+trait Trigonometry[Expr] {
+  def sin(expr: Expr): Expr
+}
+
 // interpreter
 object DoubleArithmetic extends Arithmetic[Double] {
   def +(l: Double, r: Double): Double = l + r
@@ -27,6 +32,12 @@ object DoubleArithmetic extends Arithmetic[Double] {
   def literal(value: Double): Double = value
 }
 
+object DoubleTrigonometry extends Trigonometry[Double] {
+
+  override def sin(expr: Double): Double = Math.sin(expr)
+}
+
+
 object PrintArithmetic extends Arithmetic[String] {
   def +(l: String, r: String): String =
     s"($l + $r)"
@@ -39,3 +50,9 @@ object PrintArithmetic extends Arithmetic[String] {
   def literal(value: Double): String =
     value.toString
 }
+
+object PrintTrigonometry extends Trigonometry[String] {
+
+  override def sin(expr: String): String = s"sin($expr)"
+}
+
