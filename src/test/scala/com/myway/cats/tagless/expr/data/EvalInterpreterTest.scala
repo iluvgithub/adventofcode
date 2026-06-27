@@ -5,6 +5,7 @@ import org.scalatest.matchers.should.Matchers
 
 class EvalInterpreterTest extends AnyFunSuite with Matchers {
 
+  // programs
   val onePlusTwo = Add(Literal(1), Literal(2))
   val onePlusTwoTimesThree = Mul(onePlusTwo, Literal(3))
   val oneMinusTwo = Sub(Literal(1), Literal(2))
