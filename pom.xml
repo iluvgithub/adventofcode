@@ -12,6 +12,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <cats-effect.version>3.7.0</cats-effect.version>
     </properties>
 
     <dependencies>
@@ -25,6 +26,19 @@
             <groupId>org.typelevel</groupId>
             <artifactId>cats-core_2.13</artifactId>
             <version>2.13.0</version>
+            <scope>compile</scope>
+        </dependency><!-- Source: https://mvnrepository.com/artifact/org.typelevel/cats-free -->
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>cats-free_2.13</artifactId>
+            <version>2.13.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/org.typelevel/cats-effect -->
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>cats-effect_2.13</artifactId>
+            <version>${cats-effect.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -45,6 +59,19 @@
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>3.8.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>cats-effect-testkit_2.13</artifactId>
+            <version>${cats-effect.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/org.typelevel/munit-cats-effect -->
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>munit-cats-effect_2.13</artifactId>
+            <version>2.2.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
