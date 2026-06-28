@@ -40,4 +40,14 @@ object JobScheduler {
         _   <- ref.update(_.enqueue(job))
       } yield job.jobId
 
+  def schedulerMemSleep[A](
+    ref: Ref[IO, JobSchedulerMemoryState[A]],
+    zzz: BinaryStateMachine
+  ): JobScheduler[A] =
+    (task: IO[A]) =>
+      for {
+        jobId <- schedulerMem(ref).schedule(task)
+        _     <- zzz.wakeUp
+      } yield jobId
+
 }

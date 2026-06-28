@@ -4,6 +4,7 @@ import cats.Id
 import cats.effect.kernel.Outcome
 import cats.effect.testkit.TestControl
 import cats.effect.{IO, Ref}
+import com.myway.cats.rosienadam.core.BinaryStateMachine
 import munit.CatsEffectSuite
 
 class JobSchedulerTest extends CatsEffectSuite {
@@ -32,5 +33,7 @@ class JobSchedulerTest extends CatsEffectSuite {
 
 
   }
+
+
 
 }
