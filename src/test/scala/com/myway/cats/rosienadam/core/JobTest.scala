@@ -1,4 +1,4 @@
-package com.myway.cats.rosienadam
+package com.myway.cats.rosienadam.core
 
 import cats.Id
 import cats.effect.testkit.TestControl

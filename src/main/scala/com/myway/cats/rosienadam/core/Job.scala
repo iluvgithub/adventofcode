@@ -1,4 +1,4 @@
-package com.myway.cats.rosienadam
+package com.myway.cats.rosienadam.core
 
 import cats.effect.kernel.Outcome.{Canceled, Errored, Succeeded}
 import cats.effect.kernel.{Deferred, Outcome}
