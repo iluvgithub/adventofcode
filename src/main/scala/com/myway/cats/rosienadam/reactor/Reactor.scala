@@ -8,13 +8,13 @@ import com.myway.cats.rosienadam.scheduler.JobScheduler.JobSchedulerMemoryState
 trait Reactor[A] {
   def whenAwake(
     onStart: JobId => IO[Unit],
-    onComplete: (JobId, Outcome[IO, Throwable, A]) => IO[A]
+    onComplete: (JobId, Outcome[IO, Throwable, A]) => IO[Either[String,A]]
   ): IO[Unit]
 }
 
 object Reactor {
   def fromStateRef[A](stateRef: Ref[IO, JobSchedulerMemoryState[A]]): Reactor[A] =
-    (onStart: JobId => IO[Unit], onComplete: (JobId, Outcome[IO, Throwable, A]) => IO[A]) => {
+    (onStart: JobId => IO[Unit], onComplete: (JobId, Outcome[IO, Throwable, A]) => IO[Either[String,A]]) => {
 
       def startNextJob: IO[Option[Running[A]]] =
         for {
@@ -46,7 +46,7 @@ object Reactor {
   def loop[A]( reactor: Reactor[A],
                machine: BinaryStateMachine,
                onStart: JobId => IO[Unit],
-               onComplete: (JobId, Outcome[IO, Throwable, A]) => IO[A]):IO[Nothing] =
+               onComplete: (JobId, Outcome[IO, Throwable, A]) => IO[Either[String,A]]):IO[Nothing] =
     ( machine.sleep *>  reactor.whenAwake(onStart,onComplete)).foreverM
 
 }

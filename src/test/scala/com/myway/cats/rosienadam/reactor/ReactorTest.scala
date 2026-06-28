@@ -29,11 +29,11 @@ class ReactorTest extends CatsEffectSuite {
         { case (jobId, outcome) =>
           for {
             actual <- outcome.fold(
-              IO(-1L),
-              _ => IO(-2L),
-              identity
+              IO(Right(-1L)),
+              e => IO(Left(e.getMessage)),
+              _.map(Right(_))
             )
-            _ <- refOut.set(actual)
+            _ <- actual.fold(_ => IO(()), refOut.set)
           } yield actual
         }
       )
@@ -60,15 +60,16 @@ class ReactorTest extends CatsEffectSuite {
 
     def onComplete(
       refOut: Ref[IO, Double]
-    ): (JobId, Outcome[IO, Throwable, Double]) => IO[Double] = { case (jobId, outcome) =>
-      for {
-        actual <- outcome.fold(
-          IO(-1.0),
-          _ => IO(-2.0),
-          identity
-        )
-        _ <- refOut.set(actual)
-      } yield actual
+    ): (JobId, Outcome[IO, Throwable, Double]) => IO[Either[String, Double]] = {
+      case (jobId, outcome) =>
+        for {
+          actual <- outcome.fold(
+            IO(Left(s"Cancelled jobid=${jobId.id}")),
+            e => IO(Left(e.getMessage)),
+            _.map(Right(_))
+          )
+          _ <- actual.fold( _=>IO(()), refOut.set )
+        } yield actual
     }
 
     val actualIO: IO[Double] = for {
@@ -82,7 +83,7 @@ class ReactorTest extends CatsEffectSuite {
       _ <- (
         IO.sleep(200.millis) >> scheduler.schedule(task),
         Reactor.loop(reactor, machine, onStart, onComplete(refOut))
-      ).parTupled.timeout(600.millis).handleError(_=>IO())
+      ).parTupled.timeout(600.millis).handleError(_ => IO())
       _ <- IO.sleep(200.millis)
       d <- refOut.get
     } yield d
