@@ -22,7 +22,7 @@ class JobSchedulerTest extends CatsEffectSuite {
       running   <- scheduled.start
       o         <- running.await.flatMap(_.exitCase.fold(IO("cancel"), _ => IO(""), identity))
     } yield o
-    // act
+    // act && assert
 
     for {
       control <- TestControl.execute(actualIO)
@@ -30,7 +30,6 @@ class JobSchedulerTest extends CatsEffectSuite {
       _       <- control.results.assertEquals(Some(Outcome.succeeded[Id, Throwable, String]("ABC")))
     } yield ()
 
-    // assert
 
   }
 
