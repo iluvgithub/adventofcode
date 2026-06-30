@@ -5,7 +5,7 @@ import cats.effect.kernel.Outcome
 import cats.effect.testkit.TestControl
 import cats.effect.{IO, Ref}
 import com.myway.cats.rosienadam.core.{BinaryStateMachine, JobId}
-import com.myway.cats.rosienadam.scheduler.JobScheduler
+import com.myway.cats.rosienadam.scheduler.{JobScheduler, JobSchedulerState}
 import munit.CatsEffectSuite
 
 import scala.concurrent.duration.DurationInt
@@ -13,15 +13,14 @@ import scala.concurrent.duration.DurationInt
 class ReactorTest extends CatsEffectSuite {
 
   test(" reactor when awake") {
-    val maxRunning = 2
-    val task       = IO(42L)
-
+    val maxRunning                     = 2
+    val task                           = IO(42L)
+    val state: JobSchedulerState[Long] = JobScheduler.JobSchedulerMemoryState[Long](maxRunning)
+    val refStateIo: IO[Ref[IO, JobSchedulerState[Long]]] = Ref[IO].of(state)
     val actualIO: IO[Long] = for {
-      ref <- Ref[IO].of(
-        JobScheduler.JobSchedulerMemoryState[Long](maxRunning)
-      ) // Ref[IO, JobScheduler.JobSchedulerMemoryState[String]]
+      ref    <- refStateIo
       refOut <- Ref[IO].of(-41L)
-      scheduler = JobScheduler.schedulerMem(ref)
+      scheduler = JobScheduler.makeScheduler(ref)
       reactor   = Reactor.fromStateRef[Long](ref)
       jobId <- scheduler.schedule(task)
       _ <- reactor.whenAwake(
@@ -68,17 +67,17 @@ class ReactorTest extends CatsEffectSuite {
             e => IO(Left(e.getMessage)),
             _.map(Right(_))
           )
-          _ <- actual.fold( _=>IO(()), refOut.set )
+          _ <- actual.fold(_ => IO(()), refOut.set)
         } yield actual
     }
+
+    val state: JobSchedulerState[Double] = JobScheduler.JobSchedulerMemoryState[Double](maxRunning)
 
     val actualIO: IO[Double] = for {
       refOut  <- Ref[IO].of[Double](-41.0)
       machine <- BinaryStateMachine.asleep
-      ref <- Ref[IO].of(
-        JobScheduler.JobSchedulerMemoryState[Double](maxRunning)
-      ) // Ref[IO, JobScheduler.JobSchedulerMemoryState[String]]
-      scheduler = JobScheduler.schedulerMemSleep(ref, machine)
+      ref     <- Ref[IO].of(state) // Ref[IO, JobScheduler.JobSchedulerState[String]]
+      scheduler = JobScheduler.makeSchedulerSleep(ref, machine)
       reactor   = Reactor.fromStateRef[Double](ref)
       _ <- (
         IO.sleep(200.millis) >> scheduler.schedule(task),

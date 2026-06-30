@@ -3,6 +3,7 @@ package com.myway.cats.rosienadam.core
 import cats.Id
 import cats.effect.testkit.TestControl
 import cats.effect.{IO, Outcome}
+import com.myway.cats.rosienadam.core.JobSyntax.Scheduled
 import munit.CatsEffectSuite
 
 import scala.concurrent.duration.DurationInt
